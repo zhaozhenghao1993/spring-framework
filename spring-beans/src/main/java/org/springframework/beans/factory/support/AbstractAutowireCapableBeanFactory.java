@@ -166,6 +166,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * Create a new AbstractAutowireCapableBeanFactory.
 	 */
 	public AbstractAutowireCapableBeanFactory() {
+		// 自动装配时忽略给定的依赖接口
 		super();
 		ignoreDependencyInterface(BeanNameAware.class);
 		ignoreDependencyInterface(BeanFactoryAware.class);
