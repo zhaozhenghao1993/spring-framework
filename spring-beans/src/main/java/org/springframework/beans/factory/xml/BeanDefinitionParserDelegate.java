@@ -1435,17 +1435,28 @@ public class BeanDefinitionParserDelegate {
 		return parseCustomElement(ele, null);
 	}
 
+	/**
+	 * 自定义标签的解析
+	 * @param ele
+	 * @param containingBd 为父类 bean，对顶层元素的解析应设置为 null
+	 * @return
+	 */
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) {
+		// 获取对应的命名空间
 		String namespaceUri = getNamespaceURI(ele);
 		if (namespaceUri == null) {
 			return null;
 		}
+		// 根据命名空间找到对应的 NamespaceHandler
 		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;
 		}
+		// 调用自定义的 NamespaceHandler 进行解析，此时 MyNamespaceHandler 已经完成了初始化工作，
+		// 但是我们实现的自定义命名空间处理器中并没有实现 parse 方法, 所有推断，这个方法是父类中的实现，
+		// 查看父类 NamespaceHandlerSupport 中的 parse 方法。
 		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
 	}
 
