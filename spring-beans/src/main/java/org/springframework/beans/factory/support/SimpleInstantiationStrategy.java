@@ -59,6 +59,14 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner) {
+		/**
+		 * 如果有需要覆盖或者动态替换的方法则当然需要使用 cglib 进行动态代理，因为可以
+		 * 在创建代理的同时将动态方法植入类中
+		 * 但是如果没有需要动态改变的方法，为了方法直接反射就可以了
+		 *
+		 * bd.hasMethodOverrides() 为 false 则用户没有使用 replace 或者 lookup 的配置方法，直接使用反射
+		 * 否则就需要动态代理将 replace 或者 lookup 两端逻辑切进去
+		 */
 		// Don't override the class with CGLIB if no overrides.
 		if (!bd.hasMethodOverrides()) {
 			Constructor<?> constructorToUse;
