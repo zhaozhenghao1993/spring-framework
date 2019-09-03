@@ -134,11 +134,19 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	 * @throws BeansException if context creation failed
 	 * @see #refresh()
 	 */
+	/**
+	 * 可以对配置文件数组的方式传入，并对数组进行解析加载，解析功能都在 refresh() 中实现
+	 * @param configLocations
+	 * @param refresh
+	 * @param parent
+	 * @throws BeansException
+	 */
 	public ClassPathXmlApplicationContext(
 			String[] configLocations, boolean refresh, @Nullable ApplicationContext parent)
 			throws BeansException {
 
 		super(parent);
+		// 解析配置文件路径
 		setConfigLocations(configLocations);
 		if (refresh) {
 			refresh();
