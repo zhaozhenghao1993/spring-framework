@@ -593,6 +593,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	/**
 	 * Prepare this context for refreshing, setting its startup date and
 	 * active flag as well as performing any initialization of property sources.
+	 * 做些准备工作，比如对系统属性及环境变量的初始化验证
 	 */
 	protected void prepareRefresh() {
 		// Switch to active.
@@ -605,10 +606,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
+		// 留给子类覆盖
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
+		// 验证需要的属性文件是否都已经放入环境中
 		getEnvironment().validateRequiredProperties();
 
 		// Store pre-refresh ApplicationListeners...
