@@ -673,6 +673,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Configure the bean factory with context callbacks.
 		// 添加 BeanPostProcessor
+		// 其实主要目的就是注册个 BeanPostProcessor,真正逻辑在ApplicationContextAwareProcessor 中
+		// ApplicationContextAwareProcessor 实现 BeanPostProcessor 接口
+		// 在Bean 实例化的时候，也就是 Spring 激活 bean 的 init-method 的前后，会调用 BeanPostProcessor
+		// 的 postProcessBeforeInitialization 方法和 postProcessAfterInitialization 方法
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
 		// 设置了几个忽略自动装配的接口
