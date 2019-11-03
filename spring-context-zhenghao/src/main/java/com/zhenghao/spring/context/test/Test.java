@@ -1,8 +1,8 @@
 package com.zhenghao.spring.context.test;
 
 import com.zhenghao.spring.context.app.AppConfig;
+import com.zhenghao.spring.context.service.DemoService;
 import com.zhenghao.spring.context.service.TestService;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -18,7 +18,16 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 public class Test {
 	public static void main(String[] args) {
-		ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+		/**
+		 * 把类扫描出来
+		 * 把 bean 实例化
+		 */
+		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 		System.out.println(applicationContext.getBean(TestService.class));
+		// System.out.println(applicationContext.getBean(DemoService.class));
+
+		/**
+		 *
+		 */
 	}
 }

@@ -536,6 +536,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Invoke factory processors registered as beans in the context.
 				// 激活各种 BeanFactory 后处理器
+				// 1) 扫描 各种 bean 扔到 beanDefinition
+				// 2) 处理各种 @import
+				// 3) 如果有扩展 BeanFactoryPostProcessor ，则将执行 BeanFactoryPostProcessor 接口中的方法
+				// 扫描scan --> put beanDefinitionMap --> 执行 BeanFactoryPostProcessor(1：自定义的。2：内置的)
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
@@ -560,7 +564,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Instantiate all remaining (non-lazy-init) singletons.
 				// 完成 BeanFactory 的初始化工作，其中包括 ConversionService 的设置、配置冻结以及非延迟加载的 bean 的初始化工作
-				// 初始化剩下的单实例（非惰性的）
+				// 初始化剩下的单实例（非惰性的），完成 bean 的实例化
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
@@ -927,7 +931,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.freezeConfiguration();
 
 		// Instantiate all remaining (non-lazy-init) singletons.
-		// 初始化剩下的单实例（非惰性的）
+		// 初始化剩下的单实例（非惰性的），上面都在实例化 Spring 的 bean,就在这里，实例化我们自己的 bean
 		beanFactory.preInstantiateSingletons();
 	}
 

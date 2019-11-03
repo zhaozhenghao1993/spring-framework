@@ -58,11 +58,26 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 
 
 	/**
+	 * 默认构造函数，如果直接调用这个默认构造方法，需要在稍后通过调用其 register()
+	 * 去注册配置类(java config) ,并调用 refresh()方法刷新容器，
+	 * 触发容器对注解 Bean 的载入，解析和注册过程
 	 * Create a new AnnotationConfigApplicationContext that needs to be populated
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
+		/**
+		 * 父类的构造方法
+		 * 创建一个读取注解的 Bean 定义读取器
+		 * 什么是 bean 定义? BeanDefinition
+		 */
 		this.reader = new AnnotatedBeanDefinitionReader(this);
+
+		/**
+		 * 可以用来扫描包或者类，继而转换成 BeanDefinition
+		 * 但实际上我们扫描包的工作不是 scanner 这个对象来完成的
+		 * 是 Spring 自己 new 的一个 ClassPathBeanDefinitionScanner
+		 * 在这里的 scanner 仅仅是为了程序员能够在外部调用 AnnotationConfigApplicationContext
+		 */
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -83,7 +98,14 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * e.g. {@link Configuration @Configuration} classes
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... annotatedClasses) {
+		// 这里由于他有父类，故而会先调用父类的构造方法，然后才会调用自己的构造方法
+		// 在自己构造方法中初始化一个读取器和扫描器
+		// 这里实例化一个 beanFactory
 		this();
+
+		// ac.register(AppConfig.class);
+		// this.beanDefinitionMap.put(beanName, beanDefinition);
+		// 就是把 AppConfig 这个类变成 beanDefinition 放到 beanDefinitionMap 中
 		register(annotatedClasses);
 		refresh();
 	}

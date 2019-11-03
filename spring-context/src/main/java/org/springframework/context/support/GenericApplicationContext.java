@@ -102,11 +102,14 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 
 
 	/**
+	 * AnnotationConfigApplicationContext 继承 GenericApplicationContext，故默认先调用父类的无参构造方法
+	 * 一个工厂
 	 * Create a new GenericApplicationContext.
 	 * @see #registerBeanDefinition
 	 * @see #refresh
 	 */
 	public GenericApplicationContext() {
+		// 在这里实例化一个 beanFactory
 		this.beanFactory = new DefaultListableBeanFactory();
 	}
 
