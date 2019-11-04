@@ -486,6 +486,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 给 BeanPostProcessors 一个机会来返回代理来替代真正的实例
 			// 如果创建了代理或者重写了 InstantiationAwareBeanPostProcessor 的 postProcessBeforeInstantiation 方法
 			// 并在 postProcessBeforeInstantiation 中改变了 bean，则直接返回就可以了，否则需要在下面进行常规 bean 的创建
+			// 第一次应用 spring 的后置处理器
+			// 在 bean 初始化前应用后置处理器，如果后置处理返回的 bean 不为空，则直接返回
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
@@ -1068,8 +1070,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd) {
 		Object bean = null;
 		// 如果尚未被解析
+		// 如果 beforeInstantiationResolved 还没有设置或者是false(说明还没有需要在实例化前)
 		if (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) {
 			// Make sure bean class is actually resolved at this point.
+			// 判断是否有注册过 InstantiationAwareBeanPostProcessors 类型的 bean
 			if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 				Class<?> targetType = determineTargetType(beanName, mbd);
 				if (targetType != null) {

@@ -240,6 +240,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
 			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 
+		/**
+		 * 通过 name 获取 beanName.这里不使用 name 直接作为 beanName
+		 * 1. name 可能会以 & 字符开头，表名调用者想获取 FactoryBean.
+		 * 实现类所创建的 bean。在 BeanFactory 中，FactoryBean 与普通 bean 的获取
+		 * 方式是一致的，即<beanName, bean>, beanName 中是没有 ‘&’ 字符的，
+		 * 将 name 的首字母 ‘&’ 移除，这样才能从缓存里取到 FactoryBean
+		 * 2. 还是别名问题，转换需要
+		 */
 		// 提取对应的 beanName
 		final String beanName = transformedBeanName(name);
 		Object bean;
@@ -252,6 +260,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		 * 也就是将 ObjectFactory 加入到缓存中，一旦下个 bean 创建时候需要依赖上个 bean 则直接使用 ObjectFactory
 		 */
 		// 直接尝试从缓存获取或者 singletonFactories 中的 ObjectFactory 中获取
+		// 第一次调用 getSingleton() 方法
 		// Eagerly check singleton cache for manually registered singletons.
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
@@ -340,6 +349,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// Create bean instance.
 				if (mbd.isSingleton()) {
 					// 单例模式
+					// 第二次调用 getSingleton() 方法
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							// 创建 bean 的核心方法

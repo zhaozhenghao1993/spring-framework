@@ -23,7 +23,7 @@ public class Test {
 		 * 把 bean 实例化
 		 */
 		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
-		System.out.println(applicationContext.getBean(TestService.class));
+		// System.out.println(applicationContext.getBean(TestService.class));
 		// System.out.println(applicationContext.getBean(DemoService.class));
 
 		/**

@@ -759,6 +759,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 					}
 				}
 				else {
+					// 普通 bean 创建
+					// 为什么 getBean ，因为 Spring 创建 bean 之前回去先查看这个 bean 有没有被实例化
 					getBean(beanName);
 				}
 			}
