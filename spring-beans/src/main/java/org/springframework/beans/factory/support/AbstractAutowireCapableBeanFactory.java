@@ -544,6 +544,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (instanceWrapper == null) {
 			// 实例化 bean, 将 BeanDefinition 转换为 BeanWrapper
 			// 根据指定 bean 使用对应的策略创建新的实例，如：工厂方法、构造函数自动注入、简单初始化
+			/**
+			 * 创建 bean 实例，并将实例包裹在 BeanWrapper 实现类对象中返回
+			 * createBeanInstance 中包含三种创建 bean 实例的方式：
+			 * 	1. 通过工厂方法创建 bean 实例
+			 * 	2. 通过构造方法自动注入(autowire by constructor)的方式创建 bean 实例
+			 * 	3. 通过无参构造方法创建 bean 实例
+			 *
+			 * 若 bean 的配置信息中配置了 lookup-method 和 replace-method,则会使用 CGlib
+			 * 增强 bean 实例。
+			 */
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		final Object bean = instanceWrapper.getWrappedInstance();
@@ -558,6 +568,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				// 应用 MergedBeanDefinitionPostProcessor
 				// bean 合并后的处理， Autowired 注解正是通过此方法实现诸如类型的预解析
 				try {
+					// 第三次执行后置处理器
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -590,6 +601,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			 * 对 bean 再一次依赖引用，主要应用 SmartInstantiationAware BeanPostProcessor
 			 * 其中我们熟知的 AOP 就是在这里将 advice 动态注入 bean 中，若没有则直接返回 bean，不做任何处理
 			 */
+			// 第四次执行后置处理器
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -599,6 +611,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 对 bean 进行填充，将各个属性值注入，其中，可能存在依赖于其他 bean 的属性，则会递归初始化依赖 bean
 			populateBean(beanName, mbd, instanceWrapper);
 			// 调用初始化方法，比如 init-method
+			// 执行后置处理器，aop 就是在这里完成的处理
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1407,6 +1420,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						// 对所有需要依赖检查的属性进行后处理
 						// InstantiationAwareBeanPostProcessor 处理器的 postProcessPropertyValues 方法，
 						// 对属性获取完毕填充前对属性的再次处理
+						// 第六次执行后置处理器
+						// 当 BeanPostProcessor 为 CommonAnnotationBeanPostProcessor 时解析 @Resource 注入
+						// 当 BeanPostProcessor 为 AutowiredAnnotationBeanPostProcessor 时解析 @Autowire 注入
 						pvs = ibp.postProcessPropertyValues(pvs, filteredPds, bw.getWrappedInstance(), beanName);
 						if (pvs == null) {
 							return;
