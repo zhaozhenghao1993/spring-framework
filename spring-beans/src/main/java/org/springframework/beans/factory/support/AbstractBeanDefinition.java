@@ -1155,6 +1155,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
+	 * 对class属性或者，className来解析Class，对override属性进行标记和验证，
+	 * 应用初始化前的后处理器，解析指定的bean是否存在初始化前的操作，创建bean。
+	 * 对override属性的处理，其实就是处理lookup-method和replace-method的配置。
 	 * Validate and prepare the method overrides defined for this bean.
 	 * Checks for existence of a method with the specified name.
 	 * @throws BeanDefinitionValidationException in case of validation failure
@@ -1180,6 +1183,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	protected void prepareMethodOverride(MethodOverride mo) throws BeanDefinitionValidationException {
 		// 获取对应类中对应方法名的个数
+		// 如果当前类中发现只有一个，那么就设置该方法，没有被重载，这样后续调用就可以直接使用找到的方法，不用进行参数匹配了
 		int count = ClassUtils.getMethodCountForName(getBeanClass(), mo.getMethodName());
 		if (count == 0) {
 			throw new BeanDefinitionValidationException(

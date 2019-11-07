@@ -1794,6 +1794,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
 			// 应用后处理器（在调用客户自定义初始化方法前分别调用 BeanPostProcessor 的 postProcessorsBeforeInitialization）
+			// 在这里调用 ApplicationContextAwareProcessor 的 postProcessBeforeInitialization 方法
+			// 让实现 ApplicationContextAware 的 bean 执行 setApplicationContext 方法，可以把 applicationContext 扔出去
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
