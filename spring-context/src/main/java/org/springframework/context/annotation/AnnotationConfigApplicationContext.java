@@ -104,6 +104,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		this();
 
 		// ac.register(AppConfig.class);
+		// 注册配置类，因为配置需要解析，一般不需自己扫描
 		// this.beanDefinitionMap.put(beanName, beanDefinition);
 		// 就是把 AppConfig 这个类变成 beanDefinition 放到 beanDefinitionMap 中
 		register(annotatedClasses);

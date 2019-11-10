@@ -241,6 +241,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 
 		/**
+		 * 验证 bean 的名字是否合法
 		 * 通过 name 获取 beanName.这里不使用 name 直接作为 beanName
 		 * 1. name 可能会以 & 字符开头，表名调用者想获取 FactoryBean.
 		 * 实现类所创建的 bean。在 BeanFactory 中，FactoryBean 与普通 bean 的获取
@@ -261,6 +262,112 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		 */
 		// 直接尝试从缓存获取或者 singletonFactories 中的 ObjectFactory 中获取
 		// 第一次调用 getSingleton() 方法
+		/**
+		 * 注意这里是第一次调用 getSingleton 方法，下面 Spring 还会再调用一次
+		 * 但是两次调用的不是同一个方法，属于方法的重载
+		 * 第一次 getSingleton(beanName) 也是循环依赖的最重要方法
+		 * 关于 getSingleton(beanName) 具体代码分析可以参考后面的分析
+		 * 这里给出这个方法的总结
+		 * 首先 Spring 会去单例池中根据名字获取这个 bean ,单例池就是一个 Map
+		 * 如果对象被创建了则直接从 map 中拿出来并且返回
+		 * 但是问题来了，为什么 Spring 在创建 bean 的时候会去获取一次呢？
+		 * 因为作为代码的书写者肯定知道这个 bean 这时候没有创建？为什么要 get 一次？
+		 * 我们可以分析 doGetBean 这个方法，顾名思义其实就是来获取 bean 的
+		 * 为什么创建 bean 会调用这个 doGetBean 方法呢？
+		 * 因为 doGetBean 方法不仅仅在创建 bean 的时候会被调用，在 getBean 的时候也会被调用
+		 * 他是创建 bean 和 getBean 通用的方法。
+		 * 由于循环引用需要在创建 bean 的过程中去获取被引用的那个类
+		 * 而被引用的那个类如果没有被创建，则会调用 createBean 来创建这个 bean
+		 * 在创建这个被引用的 bean 的过程中会判断这个 bean 的对象有没有实例化 bean 的对象
+		 * 为了方便阅读，请读者一定要己住两个概念：什么是 bean ，什么是 对象
+		 * 对象：只要类被实例化就可以称为对象
+		 * bean：首先得是一个对象，然后这个对象要经历一系列的 bean 生命周期
+		 * 最后把这个 对象 put 到单例池才能算一个 bean
+		 * 简而言之就是 Spring 先 new 一个对象，继而对这个对象进行生命周期回调
+		 * 接着对这个对象进行属性填充，也就是自动注入
+		 * 然后在进行 AOP 判断等等：这一些操作简称 ------ Spring 生命周期
+		 * 所以一个 bean 是经历了 Spring 周期的对象，和一个对象有区别
+		 * 再回到前面说的循环引用，首先 Spring 扫描到一个需要被实例化的类A
+		 * 于是 Spring 就去创建 A，A a = new A() 的过程会调用 getBean("a")
+		 * 所谓的 getBean 方法--核心也就是笔者现在写注释的这个 getSingleton(beanName)
+		 * 这个时候 get 出来的肯定是空。为什么是空呢？
+		 * 如果 getBean("a") 等于空：Spring 会去实例化 A ，也就是上面的 new A
+		 * 但是在实例化A的时候会再次调用一下
+		 * getSingleton(String beanName, ObjectFactory<?> singletonFactory)
+		 * 笔者上面说过现在写的注释给 getSingleton(beanName)
+		 * 即是第一次调用 getSingleton(beanName)
+		 * 实例化一共会调用两次 getSingleton 方法，但是是重载
+		 * 第二次调用 getSingleton 方法的时候 Spring 会在一个 set 集合当中记录一下这个类正在被创建
+		 * 这个一定要己住，在调用完成第一次 getSingleton(beanName) 完成之后
+		 * Spring 判定这个类没有创建，然后调用第二次 getSingleton
+		 * 在第二次 getSingleton 里面记录了一下自己已经开始实例化这个类
+		 * 这是循环依赖做的最牛逼的地方，两次 getSingleton 的调用
+		 * 也是回答面试时候关于循环依赖必须要回答的地方
+		 * 需要说明的 Spring 实例化一个对象底层使用的是反射
+		 * Spring 实例化一个对象的过程非常复杂，需要推断构造方法等等
+		 * 这里不讨论这个过程，以后有机会更新一下
+		 * 读者可以理解 Spring 直接通过new关键字来实例化一个对象
+		 * 但是这个时候对象 a 仅仅是一个对象，还不是一个完整的 bean
+		 * 结者让这个对象去完成 Spring 的 bean 的生命周期
+		 * 过程中 Spring 会判断容器是否允许循环引用，判断循环引用的代码笔者下面会分析
+		 * 前面说过 Spring 默认是支持循环引用的，壁纸后面解析这个片段的源码也是 Spring 默认支持循环引用的证据
+		 * 如果允许循环引用，Spring 会把这个对象（还不是 bean）临时保存起来，放到这个 map 当中
+		 * 注意这个 map 和 单例池是两个不同的 map，在 Spring 源码中单例池 map 叫做 singletonObjects
+		 * 这个存放临时对象的 map 叫做 singletonFactories
+		 * 当然 Spring 还要一个存放临时对象的 map 叫做 earlySingletonObjects
+		 * 所以一个是三个 map,有些博客或者书籍人也叫做三级缓存
+		 * 为什么需要三个 map 呢？ 先来了解这三个 map 到底都缓存了什么
+		 * 第一个 map singletonObjects 存放单例的 bean
+		 * 第二个 map singletonFactories 存放临时对象（没有完成 Spring Bean 生命周期的对象）
+		 * 第三个 map earlySingletonObjects 存放临时对象（没有完成 Spring Bean 生命周期的对象）
+		 * 笔者为了让大家不懵逼这里把第二个和第三个 map 功能写成了一模一样
+		 * 其实第二个和第三个 map 会有不一样的地方，但这里不方便展开讲，下文会分析
+		 * 读者暂且认为这两个 map 是一样的
+		 * 第一个 map 主要是为了直接缓存创建好的 bean：方便程序员去 getBean:很好理解
+		 * 第二个和第三个主要是为了循环引用：
+		 * 把对象 a 缓存到第二个 map 之后，会完善生命周期
+		 * 当然 Spring bean 的生命周期有很多步骤：这里先不详细讨论
+		 * 后面的再更新
+		 * 当进行到对象 a 的属性填充的这一周期的时候，发掘 a 依赖了一个 B 类
+		 * 所以 Spring 就会去判断这个 B 类到底有没有 bean 在容器当中
+		 * 这里的判断就是从第一个 map 即单例池当中去拿一个 bean
+		 * 后面会通过源码来证明是从第一个 map 中拿一个 bean 的
+		 * 假设没有，那么 Spring 会先去调用 createBean 创建这个 bean
+		 * 于是又回到和创建 A 一样的流程，在创建 B 的时候同样也会去 getBean("b")
+		 * getBean 核心也就是现在写注释的这个 getSingleton(beanName) 方法
+		 * 这个时候 get 出来肯定为空
+		 * 第一次调用玩 getSingleton 完成之后会调用第二次 getSingleton
+		 * 第二次调用 getSingleton 同样会在 set 集合中去记录 B 正在被创建
+		 * 请读者己住这个时候 set 集合中只扫有两哥记录 A 和 B
+		 * 如果为空就 b = new B() 创建一个 b 对象
+		 * 创建完成 B 的对象之后，接着完善 B 的生命周期
+		 * 同样也会判断是否允许循环依赖，如果允许则把对象 b 存到第二个 map 当中
+		 * 此时第二个 map 当中至少有两个对象了 a 和 b
+		 * 接着继续生命周期：当进行到 b 对象的属性填充的时候发觉 b 需要依赖 A
+		 * 于是就去容器看看 A 有没有创建，说白了就是从第一个 map 当中去找 a
+		 * 前面 A 创建了 a 只是个对象 还不是 bean
+		 * 还不在第一个 map 当中，所以 b 判定 A 没有创建，于是就去创建 A
+		 * 那么又再次回到远点了，创建 A 的过程中：首先调用 getBean("a")
+		 * 上文说到 getBean("a") 的核心就是 getSingleton(beanName)
+		 * 上文也说 get 出来 a == null，但是这次却不等于空了
+		 * 这次能拿出一个 a 对象：注意是对象不是 bean
+		 * 为什么两次不同？原因在于 getSingleton(beanName) 的源码
+		 * getSingleton(beanName) 首先从第一个 map 当中获取 bean
+		 * 这里就是获取 a ；但是获取不到；然后判断 a 是不是等于空
+		 * 如果等于 空则判断那个 set 集合当中有没有记录 A；
+		 * 如果这个集合当中包含了 A 则直接把 a 对象从 map 当中 get 出来并且返回
+		 * 所以这一次就不等于空了，于是 B 就可以自动注入这个 a 对象了
+		 * 这个时候 a 还只是对象，a 这个对象里面依赖的 B 还没有注入
+		 * 当 b 对象注入完成 a 之后，把 B 的周期做完，存到容器当中
+		 * 存完之后继续返回，返回到 a 注入 b 哪里？
+		 * 因为 b 的创建时因为 a 需要注入 b；于是去 get b
+		 * 当 b 创建完成一个 bean 之后，返回 b (此时 b 已经时一个 bean 了)
+		 * 需要说明的 b 是一个 bean 意味着 b 已经注入完成了 a；这点上面已经说明了
+		 * 由于返回了一个 b，故而 a 也能注入 b 了；
+		 * 接着 a 对象继续完成生命周期，当走完之后 a 也在容器中了
+		 * 至此循环依赖搞定
+		 * 记录 set 集合的名字叫做 singletonsCurrentlyInCreation
+		 */
 		// Eagerly check singleton cache for manually registered singletons.
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {

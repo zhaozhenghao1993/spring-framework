@@ -554,6 +554,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			 * 若 bean 的配置信息中配置了 lookup-method 和 replace-method,则会使用 CGlib
 			 * 增强 bean 实例。
 			 */
+			// 实例化对象，里面第二次调用后置处理器
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		final Object bean = instanceWrapper.getWrappedInstance();
@@ -568,7 +569,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				// 应用 MergedBeanDefinitionPostProcessor
 				// bean 合并后的处理， Autowired 注解正是通过此方法实现诸如类型的预解析
 				try {
-					// 第三次执行后置处理器
+					// 第三次调用执行后置处理器
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -586,6 +587,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		 * 这样就解决了循环依赖的问题
 		 */
 		// 是否需要提早曝光：单例&允许循环依赖&当前 bean 正在创建中，检测循环依赖
+		// this.allowCircularReferences 这个就是 循环依赖的 开关
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
@@ -1186,6 +1188,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// 需要根据参数解析构造函数
+		// 第二次调用后置处理器，推断构造方法
 		// Candidate constructors for autowiring?
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
