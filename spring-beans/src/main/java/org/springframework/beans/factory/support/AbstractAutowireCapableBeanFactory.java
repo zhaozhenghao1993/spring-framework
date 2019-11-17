@@ -463,6 +463,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		RootBeanDefinition mbdToUse = mbd;
 
 		// 锁定 class ，根据设置的 class 属性或者根据 className 来解析 Class
+		// 从 beanDefinition 对象当中获取出来 bean 的类型
 		// Make sure bean class is actually resolved at this point, and
 		// clone the bean definition in case of a dynamically resolved Class
 		// which cannot be stored in the shared merged bean definition.
@@ -603,7 +604,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			 * 对 bean 再一次依赖引用，主要应用 SmartInstantiationAware BeanPostProcessor
 			 * 其中我们熟知的 AOP 就是在这里将 advice 动态注入 bean 中，若没有则直接返回 bean，不做任何处理
 			 */
-			// 第四次执行后置处理器
+			// 第四次执行后置处理器，判断是否需要 AOP
+			// 这里为什么存入 ObjectFactory， 为了取出对象时 可以对这个对象做一些改造 BeanPostProcessor
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -611,9 +613,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object exposedObject = bean;
 		try {
 			// 对 bean 进行填充，将各个属性值注入，其中，可能存在依赖于其他 bean 的属性，则会递归初始化依赖 bean
+			// 填充属性，也就是我们常说的自动注入
+			// 这里会完成第五次和第六次后置处理器的调用
 			populateBean(beanName, mbd, instanceWrapper);
 			// 调用初始化方法，比如 init-method
+			// 生命周期的回调方法
 			// 执行后置处理器，aop 就是在这里完成的处理
+			// 初始化 spring
+			// 里面会进行第七次和第八次后置处理器的调用
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1799,11 +1806,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 应用后处理器（在调用客户自定义初始化方法前分别调用 BeanPostProcessor 的 postProcessorsBeforeInitialization）
 			// 在这里调用 ApplicationContextAwareProcessor 的 postProcessBeforeInitialization 方法
 			// 让实现 ApplicationContextAware 的 bean 执行 setApplicationContext 方法，可以把 applicationContext 扔出去
+			// 这里处理 @PostConstruct
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
 		try {
 			// 激活用户自定义的 init 方法
+			// 这里处理 InitializingBean DisposableBean 接口的 和 init() and destroy() methods XML的
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {
@@ -1813,6 +1822,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
 			// 应用后处理器（在调用客户自定义初始化方法后分别调用 BeanPostProcessor 的 postProcessorsAfterInitialization）
+			// 这个地方完成 AOP ==> 由 AnnotationAwareAspectJAutoProxyCreator 这个后置处理器完成
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 

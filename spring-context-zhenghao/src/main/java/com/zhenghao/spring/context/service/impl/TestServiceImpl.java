@@ -1,7 +1,10 @@
 package com.zhenghao.spring.context.service.impl;
 
+import com.zhenghao.spring.context.service.DemoService;
 import com.zhenghao.spring.context.service.TestService;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * 🙃
@@ -15,6 +18,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TestServiceImpl implements TestService {
+
+	@Resource
+	private DemoService demoService;
+
 	@Override
 	public void query() {
 		System.out.println("query---------------------");

@@ -368,6 +368,44 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		 * 至此循环依赖搞定
 		 * 记录 set 集合的名字叫做 singletonsCurrentlyInCreation
 		 */
+		/**
+		 * 开始讲解 容器的三个级别的缓存
+		 * 1、singletonObjects 单例池 存放已经走完生命周期的 bean ，一级缓存
+		 * 2、singletonFactories 工厂 ，二级缓存
+		 * 3、earlySingletonObjects ，三级缓存
+		 *
+		 * 第三级缓存：
+		 * singletonFactories：存放 ObjectFactory ,功能==> 产生一个对象
+		 * getSingleton(beanName)，三级缓存 put 一个从二级缓存中生产出来的一个对象
+		 * 为什么不直接从二级缓存拿？
+		 * 性能问题，避免重复从二级缓存的 ObjectFactory 中创建
+		 * 这个创建过程可能很消耗性能，第一次创建好后就放入三级缓存，下次再需要这个 对象 就不需要再次从二级缓存中生成。
+		 * 这就是第三级缓存（earlySingletonObjects）的必要性。
+		 *
+		 * 第二级缓存：
+		 * 想一个问题，如果没有第二级缓存，或者直接存入的就是个 对象 而不是产生对象的 ObjectFactory
+		 * 在循环依赖这里会有什么样的问题？
+		 * 按照源码， bean 的顺序为
+		 * 1. new object
+		 * 1.5 判断循环依赖---------存入二级缓存 工厂
+		 * 2.注入 DemoService ----------- 原本的 target object
+		 * 3. init 生命周期初始化方法
+		 * 4. 代理 aop
+		 * 5. put singletonObjects 将创建好的 bean 放入 一级缓存
+		 * 这里会有一个问题，注入动作发生在 代理aop 之前，如果存在循环依赖的话，
+		 * 注入 demo ---- get demo ----- new Demo ----- 注入 test ----- get test --- 这里取出的是个
+		 * 未被aop增强的原始 target object。
+		 * 这就造成了循环依赖无法注入 aop 代理的 bean
+		 * 因此，二级缓存必须是一个 ObjectFactory 工厂能产生对象，在这里可以将 工厂方法
+		 * 1. new object
+ 		 * 1.5 判断循环依赖---------存入二级缓存 工厂
+		 * 2.注入 demo ---- get demo ----- new Demo ----- 注入 test ----- get test ---从二级缓存拿出工厂 代理 aop
+ 		 * 3. init 生命周期初始化方法
+ 	 	 * 4. 代理 aop
+ 		 * 5. put singletonObjects 将创建好的 bean 放入 一级缓存
+		 * 第四步的 代理 aop 提前到 getSingleton(beanName) 中执行
+		 *
+		 */
 		// Eagerly check singleton cache for manually registered singletons.
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
@@ -391,6 +429,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			 * 再次返回创建 A，造成循环依赖，也就是下面的情况
 			 * isPrototypeCurrentlyInCreation(beanName) 为 true
 			 * 当前原型正在创建
+			 * 判断这个类是不是在创建过程中
+			 * isPrototypeCurrentlyInCreation 需要联系 getSingleton 方法
 			 */
 			// Fail if we're already creating this bean instance:
 			// We're assumably within a circular reference.
@@ -460,6 +500,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							// 创建 bean 的核心方法
+							// 完成了目标对象的创建
+							// 如果需要代理，还完成了代理
 							return createBean(beanName, mbd, args);
 						}
 						catch (BeansException ex) {

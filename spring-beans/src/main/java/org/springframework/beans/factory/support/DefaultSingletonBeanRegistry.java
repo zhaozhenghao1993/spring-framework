@@ -90,6 +90,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	/** Set of registered singletons, containing the bean names in registration order */
 	private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
 
+	// 表明这个 bean 当前正在被创建
 	/** Names of beans that are currently in creation */
 	private final Set<String> singletonsCurrentlyInCreation =
 			Collections.newSetFromMap(new ConcurrentHashMap<>(16));
@@ -201,7 +202,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 						// 调用预先设定的 getObject 方法
 						singletonObject = singletonFactory.getObject();
 						// 记录在缓存中，earlySingletonObjects 和 singletonFactories 互斥
+						// 为什么不直接从二级缓存拿？
+		 				// 性能问题，避免重复从二级缓存的 ObjectFactory 中创建
+						// 放入三级缓存
 						this.earlySingletonObjects.put(beanName, singletonObject);
+						// 从二级缓存清除? 节约空间
 						this.singletonFactories.remove(beanName);
 					}
 				}
@@ -237,7 +242,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				}
 				/**
 				 * 将 beanName 添加到 singletonsCurrentlyInCreation 这样一个 set 集合中，
-				 * 表示 当前 beanName 对应的 bean 正在创建中
+				 * 标识 当前 beanName 对应的 bean 正在创建中
 				 */
 				beforeSingletonCreation(beanName);
 				boolean newSingleton = false;

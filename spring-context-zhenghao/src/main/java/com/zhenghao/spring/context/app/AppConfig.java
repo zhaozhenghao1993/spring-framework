@@ -2,6 +2,7 @@ package com.zhenghao.spring.context.app;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * 🙃
@@ -15,5 +16,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan("com.zhenghao.spring.context")
+@EnableAspectJAutoProxy
 public class AppConfig {
 }
