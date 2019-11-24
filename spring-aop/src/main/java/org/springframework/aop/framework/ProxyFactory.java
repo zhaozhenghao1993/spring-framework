@@ -107,6 +107,11 @@ public class ProxyFactory extends ProxyCreatorSupport {
 	 * @return the proxy object
 	 */
 	public Object getProxy(@Nullable ClassLoader classLoader) {
+		/**
+		 * createAopProxy() 这个方法返回 AopProxy，这个接口有三个实现
+		 * CglibAopProxy、JdkDynamicAopProxy、ObjenesisCglibAopProxy
+		 * 因此 spring 有两个实现 AOP 的技术 Cglib 和 jdk 动态代理
+		 */
 		return createAopProxy().getProxy(classLoader);
 	}
 

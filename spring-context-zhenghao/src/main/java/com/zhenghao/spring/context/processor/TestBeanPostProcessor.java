@@ -10,7 +10,10 @@ import java.lang.reflect.Proxy;
 /**
  * 🙃
  * 🙃 BeanPostProcessor 会干预 bean 的初始化过程，不会干预 bean 的实例化过程
- * 🙃
+ * 🙃 before 方法在 init 方法执行前完成
+ * 	  after 方法在 init 方法执行后完成
+ * 	  org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory
+ * 	  #initializeBean(java.lang.String, java.lang.Object, org.springframework.beans.factory.support.RootBeanDefinition)
  *
  * @author:zhaozhenghao
  * @Email :736720794@qq.com

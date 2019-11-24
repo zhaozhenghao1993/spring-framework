@@ -17,7 +17,7 @@ import javax.annotation.Resource;
  * TestServiceImpl.java
  */
 @Component
-public class TestServiceImpl implements TestService {
+public class TestTwoServiceImpl implements TestService {
 
 	@Override
 	public void query() {

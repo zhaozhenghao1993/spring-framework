@@ -427,6 +427,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
 			throws BeansException {
 
+		/**
+		 * AOP 由 后置处理器 AnnotationAwareAspectJAutoProxyCreator 处理
+ 		 */
 		Object result = existingBean;
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
 			Object current = processor.postProcessAfterInitialization(result, beanName);
@@ -1807,6 +1810,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 在这里调用 ApplicationContextAwareProcessor 的 postProcessBeforeInitialization 方法
 			// 让实现 ApplicationContextAware 的 bean 执行 setApplicationContext 方法，可以把 applicationContext 扔出去
 			// 这里处理 @PostConstruct
+			// 第七次执行后置处理器
+			// 这里调用 BeanPostProcessor 的 before 方法
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
@@ -1823,6 +1828,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (mbd == null || !mbd.isSynthetic()) {
 			// 应用后处理器（在调用客户自定义初始化方法后分别调用 BeanPostProcessor 的 postProcessorsAfterInitialization）
 			// 这个地方完成 AOP ==> 由 AnnotationAwareAspectJAutoProxyCreator 这个后置处理器完成
+			// 这里调用 BeanPostProcessor 的 After 方法
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 

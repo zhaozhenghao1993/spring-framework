@@ -213,7 +213,18 @@ public class AnnotatedBeanDefinitionReader {
 	<T> void doRegisterBean(Class<T> annotatedClass, @Nullable Supplier<T> instanceSupplier, @Nullable String name,
 			@Nullable Class<? extends Annotation>[] qualifiers, BeanDefinitionCustomizer... definitionCustomizers) {
 
+		/**
+		 * 根据指定的 bean 创建一个 AnnotatedGenericBeanDefinition
+		 * 这个 AnnotatedGenericBeanDefinition 可以理解为一个数据结构
+		 * AnnotatedGenericBeanDefinition 包含了类的其他信息，比如一些元信息
+		 * scope、lazy等
+		 */
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(annotatedClass);
+
+		/**
+		 * 判断这个类是否需要跳过解析
+		 * 通过代码可以知道 spring 判断是否跳过解析，主要判断类有没有加注解
+		 */
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}
