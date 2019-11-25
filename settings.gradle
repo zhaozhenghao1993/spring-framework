@@ -30,4 +30,5 @@ rootProject.children.each {project ->
 	project.buildFileName = "${project.name}.gradle"
 }
 include 'spring-context-zhenghao'
+include 'spring-web-zhenghao'
 
