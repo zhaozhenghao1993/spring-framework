@@ -1,5 +1,8 @@
 package com.zhenghao.spring.web.app;
 
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
 /**
  * 🙃
  * 🙃
@@ -11,5 +14,7 @@ package com.zhenghao.spring.web.app;
  * AppConfig.java
  */
 
+@Configuration
+@ComponentScan("com.zhenghao.spring.web")
 public class AppConfig {
 }
