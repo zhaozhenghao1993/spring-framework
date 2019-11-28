@@ -1,5 +1,8 @@
 package com.zhenghao.spring.context.app;
 
+import com.zhenghao.spring.context.service.configuration.DemoOneService;
+import com.zhenghao.spring.context.service.configuration.DemoTwoService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -18,4 +21,15 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @ComponentScan("com.zhenghao.spring.context")
 @EnableAspectJAutoProxy
 public class AppConfig {
+
+	@Bean
+	public DemoOneService demoOneService() {
+		return new DemoOneService();
+	}
+
+	@Bean
+	public DemoTwoService demoTwoService() {
+		demoOneService();
+		return new DemoTwoService();
+	}
 }

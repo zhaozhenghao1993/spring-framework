@@ -120,11 +120,24 @@ class ConfigurationClassEnhancer {
 	 */
 	private Enhancer newEnhancer(Class<?> configSuperClass, @Nullable ClassLoader classLoader) {
 		Enhancer enhancer = new Enhancer();
+		// 增强父类，cglib是基于继承来的
 		enhancer.setSuperclass(configSuperClass);
+		// 增强接口，为什么要增强接口？
+		// 便于判断，表示一个类以及被增强了
 		enhancer.setInterfaces(new Class<?>[] {EnhancedConfiguration.class});
+		// 不知道
 		enhancer.setUseFactory(false);
 		enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
+		/**
+		 * BeanFactoryAwareGeneratorStrategy是一个生成策略
+		 * 主要为生成的 cglib 类中添加成员变量 $$beanFactory
+		 * 同时基于接口 EnhancedConfiguration 的父接口 BeanFactoryAware 中的 setBeanFactory 方法
+		 * 设置此变量的值为当前 Context 中的 beanFactory，这样一来我们这个 cglib 代理的对象就有了 beanFactory
+		 * 有了 factory 就能获取对象，而不是去通过方法获得对象，因为通过方法获得对象不能控制过程
+		 * 该 BeanFactory 的作用是在 this 调用时拦截该调用，并直接在 beanFactory 中获得目标 bean
+		 */
 		enhancer.setStrategy(new BeanFactoryAwareGeneratorStrategy(classLoader));
+		// 过滤方法，不能每次都去 new
 		enhancer.setCallbackFilter(CALLBACK_FILTER);
 		enhancer.setCallbackTypes(CALLBACK_FILTER.getCallbackTypes());
 		return enhancer;

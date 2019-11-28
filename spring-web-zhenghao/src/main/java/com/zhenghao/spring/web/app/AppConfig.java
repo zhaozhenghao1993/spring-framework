@@ -17,4 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan("com.zhenghao.spring.web")
 public class AppConfig {
+
+	public static void main(String[] args) {
+	}
 }
