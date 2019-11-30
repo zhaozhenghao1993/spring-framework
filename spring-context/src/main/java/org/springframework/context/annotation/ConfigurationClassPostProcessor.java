@@ -251,6 +251,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			processConfigBeanDefinitions((BeanDefinitionRegistry) beanFactory);
 		}
 
+		// 产生 cglib 代理
+		// 为什么需要产生 cglib 代理？
 		enhanceConfigurationClasses(beanFactory);
 		beanFactory.addBeanPostProcessor(new ImportAwareBeanPostProcessor(beanFactory));
 	}
@@ -372,6 +374,10 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		Map<String, AbstractBeanDefinition> configBeanDefs = new LinkedHashMap<>();
 		for (String beanName : beanFactory.getBeanDefinitionNames()) {
 			BeanDefinition beanDef = beanFactory.getBeanDefinition(beanName);
+			// 判断是否是一个全注解类
+			// 扫描是全注解类？ full 和 lite 的关系
+			// ConfigurationClassUtils.isFullConfigurationClass(beanDef) 这里就是判断是否加了 @Configuration 注解
+			// 如果为全注解类 就将这个 beanName,beanDef 放到 configBeanDefs 这个 Map 中，在下方循环这个 Map cglib 增强
 			if (ConfigurationClassUtils.isFullConfigurationClass(beanDef)) {
 				if (!(beanDef instanceof AbstractBeanDefinition)) {
 					throw new BeanDefinitionStoreException("Cannot enhance @Configuration bean definition '" +
@@ -401,6 +407,22 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				Class<?> configClass = beanDef.resolveBeanClass(this.beanClassLoader);
 				if (configClass != null) {
 					// 完成对全注解类的 cglib 代理
+					/**
+					 *	public class AppConfig$$BySpringCGLIB extends AppConfig implements EnhancedConfiguration {
+					 * 		// 此时已经拿到了 当前 上下文Context 的 beanFactory
+					 * 		BeanFactory $$beanFactory;
+					 *
+					 *      @Override
+					 * 		public UserService userService() {
+					 * 			if(first) {
+					 * 			 	   super.userService();
+					 * 			} else {
+					 * 			 	// 如果不是第一次执行，就直接 beanFactory.getBean(beanName)
+					 * 			 	beanFactory.getBean(beanName);
+					 * 			}
+					 * 		}
+					 * 	}
+					 */
 					Class<?> enhancedClass = enhancer.enhance(configClass, this.beanClassLoader);
 					if (configClass != enhancedClass) {
 						if (logger.isDebugEnabled()) {

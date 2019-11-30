@@ -16,4 +16,9 @@ public class DemoOneService {
 	public DemoOneService() {
 		System.out.println("DemoOneService  init");
 	}
+
+	public String query() {
+		System.out.println("DemoOneService ===> query");
+		return "DemoOneService ===> query";
+	}
 }

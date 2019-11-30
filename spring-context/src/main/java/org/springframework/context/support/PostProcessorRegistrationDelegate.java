@@ -124,7 +124,11 @@ final class PostProcessorRegistrationDelegate {
 			}
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			registryProcessors.addAll(currentRegistryProcessors);
+			// 最重要
+			// 执行所有 BeanDefinitionRegistryProcessors
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
+			// 执行完了所有的 BeanDefinitionRegistryProcessors
+			// 这个list只是个临时变量，故而被清除
 			currentRegistryProcessors.clear();
 
 			// Finally, invoke all other BeanDefinitionRegistryPostProcessors until no further ones appear.
@@ -148,6 +152,9 @@ final class PostProcessorRegistrationDelegate {
 
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
 			// 现在，调用到目前为止处理的所有处理器的 postProcessBeanFactory 回调。
+			// 执行 BeanFactoryPostProcessor 的回调，前面不是吗？
+			// 前面执行的 BeanFactoryPostProcessor 的子类 BeanDefinitionRegistryPostProcessor 的回调
+			// 这里执行的是 BeanFactoryPostProcessor postProcessBeanFactory
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
 		}
@@ -333,6 +340,8 @@ final class PostProcessorRegistrationDelegate {
 	private static void invokeBeanFactoryPostProcessors(
 			Collection<? extends BeanFactoryPostProcessor> postProcessors, ConfigurableListableBeanFactory beanFactory) {
 
+		// ConfigurationClassPostProcessor 这个 BeanFactoryPostProcessor 处理 @Configuration 注解
+		// 通过 cglib 产生代理对象
 		for (BeanFactoryPostProcessor postProcessor : postProcessors) {
 			postProcessor.postProcessBeanFactory(beanFactory);
 		}

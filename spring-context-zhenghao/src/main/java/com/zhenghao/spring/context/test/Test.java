@@ -1,8 +1,12 @@
 package com.zhenghao.spring.context.test;
 
 import com.zhenghao.spring.context.app.AppConfig;
+import com.zhenghao.spring.context.cglib.MethodInterceptorCallback;
 import com.zhenghao.spring.context.service.DemoService;
 import com.zhenghao.spring.context.service.TestService;
+import com.zhenghao.spring.context.service.configuration.DemoOneService;
+import org.springframework.cglib.core.SpringNamingPolicy;
+import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -47,5 +51,16 @@ public class Test {
 
 		// System.out.println(applicationContext.getBean(TestService.class));
 		// System.out.println(applicationContext.getBean(DemoService.class));
+
+		// --------------------cglib---------------------------
+		/*Enhancer enhancer = new Enhancer();
+		// 增强父类，cglib是基于继承来的
+		enhancer.setSuperclass(DemoOneService.class);
+		enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
+		// 过滤方法，给一个拦截器，每次都拦截这个方法
+		enhancer.setCallback(new MethodInterceptorCallback());
+		// 调用 create() 方法，然后向上转型，这里用代理类的父类 DemoOneService(目标类) 接收
+		DemoOneService demoOneService = (DemoOneService) enhancer.create();
+		demoOneService.query();*/
 	}
 }

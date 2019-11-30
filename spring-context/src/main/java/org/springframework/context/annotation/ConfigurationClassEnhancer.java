@@ -76,6 +76,7 @@ class ConfigurationClassEnhancer {
 	// The callbacks to use. Note that these callbacks must be stateless.
 	private static final Callback[] CALLBACKS = new Callback[] {
 			new BeanMethodInterceptor(),
+			// 设置一个 beanFactory
 			new BeanFactoryAwareMethodInterceptor(),
 			NoOp.INSTANCE
 	};
@@ -96,6 +97,8 @@ class ConfigurationClassEnhancer {
 	 * @return the enhanced subclass
 	 */
 	public Class<?> enhance(Class<?> configClass, @Nullable ClassLoader classLoader) {
+		// 判断是否被代理过，创建代理时，会给被代理类加入一个接口 EnhancedConfiguration.class
+		// 判断如果 这个类 已经加上了 这个接口，则说明当前这个类已经被代理过了
 		if (EnhancedConfiguration.class.isAssignableFrom(configClass)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(String.format("Ignoring request to enhance %s as it has " +
@@ -107,6 +110,7 @@ class ConfigurationClassEnhancer {
 			}
 			return configClass;
 		}
+		// 这里为 @Configuration 产生一个代理对象
 		Class<?> enhancedClass = createClass(newEnhancer(configClass, classLoader));
 		if (logger.isDebugEnabled()) {
 			logger.debug(String.format("Successfully enhanced %s; enhanced class name is: %s",
@@ -127,6 +131,7 @@ class ConfigurationClassEnhancer {
 		enhancer.setInterfaces(new Class<?>[] {EnhancedConfiguration.class});
 		// 不知道
 		enhancer.setUseFactory(false);
+		// 为这个增强类 生成一个名字
 		enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
 		/**
 		 * BeanFactoryAwareGeneratorStrategy是一个生成策略
@@ -330,10 +335,13 @@ class ConfigurationClassEnhancer {
 		public Object intercept(Object enhancedConfigInstance, Method beanMethod, Object[] beanMethodArgs,
 					MethodProxy cglibMethodProxy) throws Throwable {
 
+			// enhancedConfigInstance 代理
+			// 通过 enhancedConfigInstance 中 cglib 生成的成员变量 $$beanFactory 获得 beanFactory
 			ConfigurableBeanFactory beanFactory = getBeanFactory(enhancedConfigInstance);
 			String beanName = BeanAnnotationHelper.determineBeanNameFor(beanMethod);
 
 			// Determine whether this bean is a scoped-proxy
+			// 获取 method 的作用域
 			Scope scope = AnnotatedElementUtils.findMergedAnnotation(beanMethod, Scope.class);
 			if (scope != null && scope.proxyMode() != ScopedProxyMode.NO) {
 				String scopedBeanName = ScopedProxyCreator.getTargetBeanName(beanName);
@@ -361,6 +369,40 @@ class ConfigurationClassEnhancer {
 				}
 			}
 
+			// 这里的判断
+			// 传入代理 beanMethod ，就是当前调用的方法，拿当前调用的方法和当前正在执行的方法作判断，
+			// 如果被执行的方法和当前正在执行的方法是同一个
+			// 则说明此处是第一次调用
+			/**
+			 * @Bean
+			 * 	public DemoOneService demoOneService() {
+			 * 		return new DemoOneService();
+			 * 	}
+			 *
+			 * 	@Bean
+			 * 	public DemoTwoService demoTwoService() {
+			 * 		// 此时 正在执行方法为 demoTwoService(), 被执行方法为 demoOneService()
+			 * 		// 不是同一个，说明不是第一次调用
+			 * 		demoOneService();
+			 * 		return new DemoTwoService();
+			 * 	}
+			 *
+			 * 	第一次进来 先执行 demoOneService() 方法去创建 DemoOneService
+			 * 	当前调用的方法 和 当前正在执行的方法 都是 demoOneService()
+			 * 	所以代理类执行 cglibMethodProxy.invokeSuper(enhancedConfigInstance, beanMethodArgs)
+			 * 	执行目标类的 方法创建 DemoOneService
+			 *
+			 * 	第二次进来 先执行 demoTwoService() 方法去创建 DemoTwoService
+			 * 	当前调用的方法 和 当前正在执行的方法 都是 demoTwoService()
+			 * 	所以代理类执行 cglibMethodProxy.invokeSuper(enhancedConfigInstance, beanMethodArgs)
+			 * 	执行目标类的 super.demoTwoService()方法,但是此时目标类中又执行 demoOneService()
+			 *
+			 * 	因此第三次进来 执行 demoOneService()
+			 * 	当前调用的方法 demoOneService()， 当前正在执行的方法 demoTwoService()
+			 * 	两个方法不一样 则执行 resolveBeanReference(beanMethod, beanMethodArgs, beanFactory, beanName)
+			 * 	这个里面就没有再去执行 目标类 的 demoOneService()方法，而是直接 beanFactory.getBean(beanName)
+			 * 	去获取这个 bean 了
+			 */
 			if (isCurrentlyInvokedFactoryMethod(beanMethod)) {
 				// The factory is calling the bean method in order to instantiate and register the bean
 				// (i.e. via a getBean() call) -> invoke the super implementation of the method to actually
@@ -375,6 +417,7 @@ class ConfigurationClassEnhancer {
 									"these container lifecycle issues; see @Bean javadoc for complete details.",
 							beanMethod.getDeclaringClass().getSimpleName(), beanMethod.getName()));
 				}
+				// 如果是第一次调用，就调用父类方法，就是调用目标类的方法去创建 bean
 				return cglibMethodProxy.invokeSuper(enhancedConfigInstance, beanMethodArgs);
 			}
 
@@ -388,6 +431,9 @@ class ConfigurationClassEnhancer {
 			// the bean method, direct or indirect. The bean may have already been marked
 			// as 'in creation' in certain autowiring scenarios; if so, temporarily set
 			// the in-creation status to false in order to avoid an exception.
+			// 判断他是否正在创建
+			// 只要当前这个 beanName 不是正在被创建，那么他要不然已经被创建，要不然还没有被创建
+			// 就可以直接 beanFactory.getBean(beanName) 去拿！
 			boolean alreadyInCreation = beanFactory.isCurrentlyInCreation(beanName);
 			try {
 				if (alreadyInCreation) {
