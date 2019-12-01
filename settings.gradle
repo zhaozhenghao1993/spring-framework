@@ -31,4 +31,5 @@ rootProject.children.each {project ->
 }
 include 'spring-context-zhenghao'
 include 'spring-web-zhenghao'
+include 'spring-mybatis-zhenghao'
 
