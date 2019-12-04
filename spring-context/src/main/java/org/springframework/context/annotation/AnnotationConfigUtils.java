@@ -127,16 +127,16 @@ public class AnnotationConfigUtils {
 
 
 	/**
-	 * Register all relevant annotation post processors in the given register.
-	 * @param registry the register to operate on
+	 * Register all relevant annotation post processors in the given registry.
+	 * @param registry the registry to operate on
 	 */
 	public static void registerAnnotationConfigProcessors(BeanDefinitionRegistry registry) {
 		registerAnnotationConfigProcessors(registry, null);
 	}
 
 	/**
-	 * Register all relevant annotation post processors in the given register.
-	 * @param registry the register to operate on
+	 * Register all relevant annotation post processors in the given registry.
+	 * @param registry the registry to operate on
 	 * @param source the configuration source element (already extracted)
 	 * that this registration was triggered from. May be {@code null}.
 	 * @return a Set of BeanDefinitionHolders, containing all bean definitions

@@ -56,7 +56,7 @@ public interface ImportBeanDefinitionRegistrar {
 	 * registered here, due to lifecycle constraints related to {@code @Configuration}
 	 * class processing.
 	 * @param importingClassMetadata annotation metadata of the importing class
-	 * @param registry current bean definition register
+	 * @param registry current bean definition registry
 	 */
 	void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry);
 

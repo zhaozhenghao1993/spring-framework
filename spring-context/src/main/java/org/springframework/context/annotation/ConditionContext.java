@@ -34,7 +34,7 @@ public interface ConditionContext {
 	/**
 	 * Return the {@link BeanDefinitionRegistry} that will hold the bean definition
 	 * should the condition match.
-	 * @throws IllegalStateException if no register is available (which is unusual:
+	 * @throws IllegalStateException if no registry is available (which is unusual:
 	 * only the case with a plain {@link ClassPathScanningCandidateComponentProvider})
 	 */
 	BeanDefinitionRegistry getRegistry();

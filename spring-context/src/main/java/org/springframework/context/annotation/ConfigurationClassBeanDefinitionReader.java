@@ -110,7 +110,7 @@ class ConfigurationClassBeanDefinitionReader {
 
 	/**
 	 * Read {@code configurationModel}, registering bean definitions
-	 * with the register based on its contents.
+	 * with the registry based on its contents.
 	 */
 	public void loadBeanDefinitions(Set<ConfigurationClass> configurationModel) {
 		TrackedConditionEvaluator trackedConditionEvaluator = new TrackedConditionEvaluator();

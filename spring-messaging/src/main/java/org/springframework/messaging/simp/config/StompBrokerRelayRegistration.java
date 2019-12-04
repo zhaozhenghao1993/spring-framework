@@ -212,13 +212,13 @@ public class StompBrokerRelayRegistration extends AbstractBrokerRegistration {
 	}
 
 	/**
-	 * Set a destination to broadcast the content of the local user register to
+	 * Set a destination to broadcast the content of the local user registry to
 	 * and to listen for such broadcasts from other servers. In a multi-application
-	 * server scenarios this allows each server's user register to be aware of
+	 * server scenarios this allows each server's user registry to be aware of
 	 * users connected to other servers.
 	 * <p>By default this is not set.
-	 * @param destination the destination for broadcasting user register details,
-	 * e.g. "/topic/simp-user-register".
+	 * @param destination the destination for broadcasting user registry details,
+	 * e.g. "/topic/simp-user-registry".
 	 */
 	public StompBrokerRelayRegistration setUserRegistryBroadcast(String destination) {
 		this.userRegistryBroadcast = destination;

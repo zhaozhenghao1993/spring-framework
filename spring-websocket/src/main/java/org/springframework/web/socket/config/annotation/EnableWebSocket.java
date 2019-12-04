@@ -45,8 +45,8 @@ import org.springframework.context.annotation.Import;
  * public class MyConfiguration implements WebSocketConfigurer {
  *
  * 	   &#064;Override
- * 	   public void registerWebSocketHandlers(WebSocketHandlerRegistry register) {
- *         register.addHandler(echoWebSocketHandler(), "/echo").withSockJS();
+ * 	   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+ *         registry.addHandler(echoWebSocketHandler(), "/echo").withSockJS();
  * 	   }
  *
  *	   &#064;Override

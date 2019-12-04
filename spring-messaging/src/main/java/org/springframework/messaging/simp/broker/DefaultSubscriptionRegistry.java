@@ -402,7 +402,7 @@ public class DefaultSubscriptionRegistry extends AbstractSubscriptionRegistry {
 
 		@Override
 		public String toString() {
-			return "register[" + this.sessions.size() + " sessions]";
+			return "registry[" + this.sessions.size() + " sessions]";
 		}
 	}
 

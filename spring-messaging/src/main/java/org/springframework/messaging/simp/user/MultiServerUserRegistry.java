@@ -36,11 +36,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
- * {@code SimpUserRegistry} that looks up users in a "local" user register as
- * well as a set of "remote" user registries. The local register is provided as
+ * {@code SimpUserRegistry} that looks up users in a "local" user registry as
+ * well as a set of "remote" user registries. The local registry is provided as
  * a constructor argument while remote registries are updated via broadcasts
  * handled by {@link UserRegistryMessageHandler} which in turn notifies this
- * register when updates are received.
+ * registry when updates are received.
  *
  * @author Rossen Stoyanchev
  * @since 4.2
@@ -61,7 +61,7 @@ public class MultiServerUserRegistry implements SimpUserRegistry, SmartApplicati
 
 
 	/**
-	 * Create an instance wrapping the local user register.
+	 * Create an instance wrapping the local user registry.
 	 */
 	public MultiServerUserRegistry(SimpUserRegistry localRegistry) {
 		Assert.notNull(localRegistry, "'localRegistry' is required");
@@ -204,7 +204,7 @@ public class MultiServerUserRegistry implements SimpUserRegistry, SmartApplicati
 		}
 
 		/**
-		 * Constructor to create DTO from a local user register.
+		 * Constructor to create DTO from a local user registry.
 		 */
 		public UserRegistrySnapshot(String id, SimpUserRegistry registry) {
 			this.id = id;
@@ -270,7 +270,7 @@ public class MultiServerUserRegistry implements SimpUserRegistry, SmartApplicati
 
 		private String name = "";
 
-		// User sessions from "this" register only (i.e. one server)
+		// User sessions from "this" registry only (i.e. one server)
 		private Set<TransferSimpSession> sessions;
 
 		// Cross-server session lookup (e.g. user connected to multiple servers)

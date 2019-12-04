@@ -41,7 +41,7 @@ public class AutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 
 	/**
 	 * Register, escalate, and configure the standard auto proxy creator (APC) against the
-	 * given register. Works by finding the nearest annotation declared on the importing
+	 * given registry. Works by finding the nearest annotation declared on the importing
 	 * {@code @Configuration} class that has both {@code mode} and {@code proxyTargetClass}
 	 * attributes. If {@code mode} is set to {@code PROXY}, the APC is registered; if
 	 * {@code proxyTargetClass} is set to {@code true}, then the APC is forced to use

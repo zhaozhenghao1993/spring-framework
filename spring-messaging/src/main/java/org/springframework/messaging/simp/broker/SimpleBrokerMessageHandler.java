@@ -98,9 +98,9 @@ public class SimpleBrokerMessageHandler extends AbstractBrokerMessageHandler {
 	/**
 	 * Configure a custom SubscriptionRegistry to use for storing subscriptions.
 	 * <p><strong>Note</strong> that when a custom PathMatcher is configured via
-	 * {@link #setPathMatcher}, if the custom register is not an instance of
+	 * {@link #setPathMatcher}, if the custom registry is not an instance of
 	 * {@link DefaultSubscriptionRegistry}, the provided PathMatcher is not used
-	 * and must be configured directly on the custom register.
+	 * and must be configured directly on the custom registry.
 	 */
 	public void setSubscriptionRegistry(SubscriptionRegistry subscriptionRegistry) {
 		Assert.notNull(subscriptionRegistry, "SubscriptionRegistry must not be null");

@@ -48,7 +48,7 @@ public class ListenableFutureCallbackRegistry<T> {
 
 
 	/**
-	 * Add the given callback to this register.
+	 * Add the given callback to this registry.
 	 * @param callback the callback to add
 	 */
 	public void addCallback(ListenableFutureCallback<? super T> callback) {
@@ -90,7 +90,7 @@ public class ListenableFutureCallbackRegistry<T> {
 	}
 
 	/**
-	 * Add the given success callback to this register.
+	 * Add the given success callback to this registry.
 	 * @param callback the success callback to add
 	 * @since 4.1
 	 */
@@ -109,7 +109,7 @@ public class ListenableFutureCallbackRegistry<T> {
 	}
 
 	/**
-	 * Add the given failure callback to this register.
+	 * Add the given failure callback to this registry.
 	 * @param callback the failure callback to add
 	 * @since 4.1
 	 */

@@ -80,7 +80,7 @@ public class MultiServerUserRegistryTests {
 		Object registryDto = new MultiServerUserRegistry(testRegistry).getLocalRegistryDto();
 		Message<?> message = this.converter.toMessage(registryDto, null);
 
-		// Add remote register
+		// Add remote registry
 		this.registry.addRemoteRegistryDto(message, this.converter, 20000);
 
 		assertEquals(1, this.registry.getUserCount());
@@ -119,7 +119,7 @@ public class MultiServerUserRegistryTests {
 		Object registryDto = new MultiServerUserRegistry(userRegistry).getLocalRegistryDto();
 		Message<?> message = this.converter.toMessage(registryDto, null);
 
-		// Add remote register
+		// Add remote registry
 		this.registry.addRemoteRegistryDto(message, this.converter, 20000);
 
 		assertEquals(3, this.registry.getUserCount());
@@ -134,7 +134,7 @@ public class MultiServerUserRegistryTests {
 
 	@Test  // SPR-13800
 	public void getSessionsWhenUserIsConnectedToMultipleServers() throws Exception {
-		// Add user to local register
+		// Add user to local registry
 		TestSimpUser localUser = new TestSimpUser("joe");
 		TestSimpSession localSession = new TestSimpSession("sess123");
 		localUser.addSessions(localSession);
@@ -149,7 +149,7 @@ public class MultiServerUserRegistryTests {
 		Object remoteRegistryDto = new MultiServerUserRegistry(remoteRegistry).getLocalRegistryDto();
 		Message<?> message = this.converter.toMessage(remoteRegistryDto, null);
 
-		// Add remote register
+		// Add remote registry
 		this.registry.addRemoteRegistryDto(message, this.converter, 20000);
 
 
@@ -178,7 +178,7 @@ public class MultiServerUserRegistryTests {
 		Object registryDto = new MultiServerUserRegistry(testRegistry).getLocalRegistryDto();
 		Message<?> message = this.converter.toMessage(registryDto, null);
 
-		// Add remote register
+		// Add remote registry
 		this.registry.addRemoteRegistryDto(message, this.converter, -1);
 
 

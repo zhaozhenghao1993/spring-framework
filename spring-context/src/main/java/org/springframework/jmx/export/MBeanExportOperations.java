@@ -55,7 +55,7 @@ public interface MBeanExportOperations {
 	void registerManagedResource(Object managedResource, ObjectName objectName) throws MBeanExportException;
 
 	/**
-	 * Remove the specified MBean from the underlying MBeanServer register.
+	 * Remove the specified MBean from the underlying MBeanServer registry.
 	 * @param objectName the {@link ObjectName} of the resource to remove
 	 */
 	void unregisterManagedResource(ObjectName objectName);

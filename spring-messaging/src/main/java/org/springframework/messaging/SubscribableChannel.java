@@ -17,7 +17,7 @@
 package org.springframework.messaging;
 
 /**
- * A {@link MessageChannel} that maintains a register of subscribers and invokes
+ * A {@link MessageChannel} that maintains a registry of subscribers and invokes
  * them to handle messages sent through this channel.
  *
  * @author Mark Fisher

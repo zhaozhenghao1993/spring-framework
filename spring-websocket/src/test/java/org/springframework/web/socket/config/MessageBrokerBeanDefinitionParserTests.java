@@ -301,7 +301,7 @@ public class MessageBrokerBeanDefinitionParserTests {
 		assertNotNull(messageBroker.getSystemSubscriptions());
 		assertSame(userDestHandler, messageBroker.getSystemSubscriptions().get(destination));
 
-		destination = "/topic/simp-user-register";
+		destination = "/topic/simp-user-registry";
 		UserRegistryMessageHandler userRegistryHandler = this.appContext.getBean(UserRegistryMessageHandler.class);
 		assertEquals(destination, userRegistryHandler.getBroadcastDestination());
 		assertNotNull(messageBroker.getSystemSubscriptions());

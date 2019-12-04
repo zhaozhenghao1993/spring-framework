@@ -30,7 +30,7 @@ import org.springframework.beans.factory.InitializingBean;
 public class CustomSQLExceptionTranslatorRegistrar implements InitializingBean {
 
 	/**
-	 * Map register to hold custom translators specific databases.
+	 * Map registry to hold custom translators specific databases.
 	 * Key is the database product name as defined in the
 	 * {@link org.springframework.jdbc.support.SQLErrorCodesFactory}.
 	 */

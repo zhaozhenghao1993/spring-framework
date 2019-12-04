@@ -35,7 +35,7 @@ public interface AliasRegistry {
 	void registerAlias(String name, String alias);
 
 	/**
-	 * Remove the specified alias from this register.
+	 * Remove the specified alias from this registry.
 	 * @param alias the alias to remove
 	 * @throws IllegalStateException if no such alias was found
 	 */

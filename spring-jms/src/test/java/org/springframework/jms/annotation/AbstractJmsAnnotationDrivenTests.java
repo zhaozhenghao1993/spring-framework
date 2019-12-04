@@ -97,7 +97,7 @@ public abstract class AbstractJmsAnnotationDrivenTests {
 
 	/**
 	 * Test for {@link FullBean} discovery. In this case, no default is set because
-	 * all endpoints provide a default register. This shows that the default factory
+	 * all endpoints provide a default registry. This shows that the default factory
 	 * is only retrieved if it needs to be.
 	 */
 	public void testFullConfiguration(ApplicationContext context) {
@@ -137,9 +137,9 @@ public abstract class AbstractJmsAnnotationDrivenTests {
 
 		JmsListenerEndpointRegistry customRegistry =
 				context.getBean("customRegistry", JmsListenerEndpointRegistry.class);
-		assertEquals("Wrong number of containers in the register", 2,
+		assertEquals("Wrong number of containers in the registry", 2,
 				customRegistry.getListenerContainerIds().size());
-		assertEquals("Wrong number of containers in the register", 2,
+		assertEquals("Wrong number of containers in the registry", 2,
 				customRegistry.getListenerContainers().size());
 		assertNotNull("Container with custom id on the annotation should be found",
 				customRegistry.getListenerContainer("listenerId"));

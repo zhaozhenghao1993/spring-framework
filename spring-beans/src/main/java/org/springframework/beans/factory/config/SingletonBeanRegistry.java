@@ -19,7 +19,7 @@ package org.springframework.beans.factory.config;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface that defines a register for shared bean instances.
+ * Interface that defines a registry for shared bean instances.
  * Can be implemented by {@link org.springframework.beans.factory.BeanFactory}
  * implementations in order to expose their singleton management facility
  * in a uniform manner.
@@ -35,9 +35,9 @@ import org.springframework.lang.Nullable;
 public interface SingletonBeanRegistry {
 
 	/**
-	 * Register the given existing object as singleton in the bean register,
+	 * Register the given existing object as singleton in the bean registry,
 	 * under the given bean name.
-	 * <p>The given instance is supposed to be fully initialized; the register
+	 * <p>The given instance is supposed to be fully initialized; the registry
 	 * will not perform any initialization callbacks (in particular, it won't
 	 * call InitializingBean's {@code afterPropertiesSet} method).
 	 * The given instance will not receive any destruction callbacks
@@ -45,8 +45,8 @@ public interface SingletonBeanRegistry {
 	 * <p>When running within a full BeanFactory: <b>Register a bean definition
 	 * instead of an existing instance if your bean is supposed to receive
 	 * initialization and/or destruction callbacks.</b>
-	 * <p>Typically invoked during register configuration, but can also be used
-	 * for runtime registration of singletons. As a consequence, a register
+	 * <p>Typically invoked during registry configuration, but can also be used
+	 * for runtime registration of singletons. As a consequence, a registry
 	 * implementation should synchronize singleton access; it will have to do
 	 * this anyway if it supports a BeanFactory's lazy initialization of singletons.
 	 * @param beanName the name of the bean
@@ -74,7 +74,7 @@ public interface SingletonBeanRegistry {
 	Object getSingleton(String beanName);
 
 	/**
-	 * Check if this register contains a singleton instance with the given name.
+	 * Check if this registry contains a singleton instance with the given name.
 	 * <p>Only checks already instantiated singletons; does not return {@code true}
 	 * for singleton bean definitions which have not been instantiated yet.
 	 * <p>The main purpose of this method is to check manually registered singletons
@@ -98,7 +98,7 @@ public interface SingletonBeanRegistry {
 	boolean containsSingleton(String beanName);
 
 	/**
-	 * Return the names of singleton beans registered in this register.
+	 * Return the names of singleton beans registered in this registry.
 	 * <p>Only checks already instantiated singletons; does not return names
 	 * for singleton bean definitions which have not been instantiated yet.
 	 * <p>The main purpose of this method is to check manually registered singletons
@@ -112,7 +112,7 @@ public interface SingletonBeanRegistry {
 	String[] getSingletonNames();
 
 	/**
-	 * Return the number of singleton beans registered in this register.
+	 * Return the number of singleton beans registered in this registry.
 	 * <p>Only checks already instantiated singletons; does not count
 	 * singleton bean definitions which have not been instantiated yet.
 	 * <p>The main purpose of this method is to check manually registered singletons
@@ -126,7 +126,7 @@ public interface SingletonBeanRegistry {
 	int getSingletonCount();
 
 	/**
-	 * Return the singleton mutex used by this register (for external collaborators).
+	 * Return the singleton mutex used by this registry (for external collaborators).
 	 * @return the mutex object (never {@code null})
 	 * @since 4.2
 	 */

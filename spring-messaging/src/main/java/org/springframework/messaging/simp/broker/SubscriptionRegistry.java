@@ -20,7 +20,7 @@ import org.springframework.messaging.Message;
 import org.springframework.util.MultiValueMap;
 
 /**
- * A register of subscription by session that allows looking up subscriptions.
+ * A registry of subscription by session that allows looking up subscriptions.
  *
  * @author Rossen Stoyanchev
  * @since 4.0

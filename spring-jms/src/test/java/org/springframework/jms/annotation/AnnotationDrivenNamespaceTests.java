@@ -61,7 +61,7 @@ public class AnnotationDrivenNamespaceTests extends AbstractJmsAnnotationDrivenT
 	@Test
 	public void customConfiguration() {
 		ApplicationContext context = new ClassPathXmlApplicationContext(
-				"annotation-driven-custom-register.xml", getClass());
+				"annotation-driven-custom-registry.xml", getClass());
 		testCustomConfiguration(context);
 	}
 

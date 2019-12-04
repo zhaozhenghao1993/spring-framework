@@ -36,7 +36,7 @@ import org.springframework.util.ClassUtils;
  * the recommended usage as of Spring 2.0 is to use custom
  * {@link PropertyEditorRegistrar} implementations that in turn register any
  * desired editor instances on a given
- * {@link org.springframework.beans.PropertyEditorRegistry register}. Each
+ * {@link org.springframework.beans.PropertyEditorRegistry registry}. Each
  * PropertyEditorRegistrar can register any number of custom editors.
  *
  * <pre class="code">

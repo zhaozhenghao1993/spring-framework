@@ -37,7 +37,7 @@ import org.springframework.web.server.ServerWebExchange;
 /**
  * Base class for {@link org.springframework.web.reactive.HandlerResultHandler
  * HandlerResultHandler} with support for content negotiation and access to a
- * {@code ReactiveAdapter} register.
+ * {@code ReactiveAdapter} registry.
  *
  * @author Rossen Stoyanchev
  * @since 5.0

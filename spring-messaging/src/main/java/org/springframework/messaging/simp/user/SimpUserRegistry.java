@@ -21,7 +21,7 @@ import java.util.Set;
 import org.springframework.lang.Nullable;
 
 /**
- * A register of currently connected users.
+ * A registry of currently connected users.
  *
  * @author Rossen Stoyanchev
  * @since 4.2

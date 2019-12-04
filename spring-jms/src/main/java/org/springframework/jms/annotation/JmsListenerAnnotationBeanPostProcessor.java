@@ -72,7 +72,7 @@ import org.springframework.util.StringValueResolver;
  * annotation.
  *
  * <p>Autodetects any {@link JmsListenerConfigurer} instances in the container,
- * allowing for customization of the register to be used, the default container
+ * allowing for customization of the registry to be used, the default container
  * factory or for fine-grained control over endpoints registration. See the
  * {@link EnableJms} javadocs for complete usage details.
  *
@@ -156,7 +156,7 @@ public class JmsListenerAnnotationBeanPostProcessor
 	/**
 	 * Making a {@link BeanFactory} available is optional; if not set,
 	 * {@link JmsListenerConfigurer} beans won't get autodetected and an
-	 * {@link #setEndpointRegistry endpoint register} has to be explicitly configured.
+	 * {@link #setEndpointRegistry endpoint registry} has to be explicitly configured.
 	 */
 	@Override
 	public void setBeanFactory(BeanFactory beanFactory) {
@@ -191,7 +191,7 @@ public class JmsListenerAnnotationBeanPostProcessor
 		if (this.registrar.getEndpointRegistry() == null) {
 			// Determine JmsListenerEndpointRegistry bean from the BeanFactory
 			if (this.endpointRegistry == null) {
-				Assert.state(this.beanFactory != null, "BeanFactory must be set to find endpoint register by bean name");
+				Assert.state(this.beanFactory != null, "BeanFactory must be set to find endpoint registry by bean name");
 				this.endpointRegistry = this.beanFactory.getBean(
 						JmsListenerConfigUtils.JMS_LISTENER_ENDPOINT_REGISTRY_BEAN_NAME, JmsListenerEndpointRegistry.class);
 			}

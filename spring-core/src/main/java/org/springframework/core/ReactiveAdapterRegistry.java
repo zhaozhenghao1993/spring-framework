@@ -35,7 +35,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * A register of adapters to adapt Reactive Streams {@link Publisher} to/from
+ * A registry of adapters to adapt Reactive Streams {@link Publisher} to/from
  * various async/reactive types such as {@code CompletableFuture}, RxJava
  * {@code Observable}, and others.
  *
@@ -58,7 +58,7 @@ public class ReactiveAdapterRegistry {
 
 
 	/**
-	 * Create a register and auto-register default adapters.
+	 * Create a registry and auto-register default adapters.
 	 * @see #getSharedInstance()
 	 */
 	public ReactiveAdapterRegistry() {
@@ -102,7 +102,7 @@ public class ReactiveAdapterRegistry {
 
 
 	/**
-	 * Whether the register has any adapters which would be the case if any of
+	 * Whether the registry has any adapters which would be the case if any of
 	 * Reactor, RxJava 2, or RxJava 1 (+ RxJava Reactive Streams bridge) are
 	 * present on the classpath.
 	 */

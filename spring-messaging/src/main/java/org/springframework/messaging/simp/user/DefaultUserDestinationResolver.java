@@ -64,8 +64,8 @@ public class DefaultUserDestinationResolver implements UserDestinationResolver {
 
 	/**
 	 * Create an instance that will access user session id information through
-	 * the provided register.
-	 * @param userRegistry the register, never {@code null}
+	 * the provided registry.
+	 * @param userRegistry the registry, never {@code null}
 	 */
 	public DefaultUserDestinationResolver(SimpUserRegistry userRegistry) {
 		Assert.notNull(userRegistry, "SimpUserRegistry must not be null");

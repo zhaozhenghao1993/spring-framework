@@ -185,7 +185,7 @@ import org.springframework.context.annotation.Import;
  *
  *     &#064;Bean
  *     public JmsListenerEndpointRegistry<?> myJmsListenerEndpointRegistry() {
- *         // register configuration
+ *         // registry configuration
  *     }
  *
  *     &#064;Bean
@@ -206,12 +206,12 @@ import org.springframework.context.annotation.Import;
  * <pre class="code">
  * {@code <beans>
  *
- *     <jms:annotation-driven register="myJmsListenerEndpointRegistry"
+ *     <jms:annotation-driven registry="myJmsListenerEndpointRegistry"
  *         handler-method-factory="myJmsHandlerMethodFactory"/&gt;
  *
  *     <bean id="myJmsListenerEndpointRegistry"
  *           class="org.springframework.jms.config.JmsListenerEndpointRegistry">
- *           // register configuration
+ *           // registry configuration
  *     </bean>
  *
  *     <bean id="myJmsHandlerMethodFactory"
