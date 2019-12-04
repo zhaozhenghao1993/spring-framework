@@ -33,9 +33,9 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.util.Assert;
 
 /**
- * {@code MessageHandler} that handles user registry broadcasts from other
+ * {@code MessageHandler} that handles user register broadcasts from other
  * application servers and periodically broadcasts the content of the local
- * user registry.
+ * user register.
  *
  * <p>The aggregated information is maintained in a {@link MultiServerUserRegistry}.
  *
@@ -62,8 +62,8 @@ public class UserRegistryMessageHandler implements MessageHandler, ApplicationLi
 
 	/**
 	 * Constructor.
-	 * @param userRegistry the registry with local and remote user registry information
-	 * @param brokerTemplate template for broadcasting local registry information
+	 * @param userRegistry the register with local and remote user register information
+	 * @param brokerTemplate template for broadcasting local register information
 	 * @param broadcastDestination the destination to broadcast to
 	 * @param scheduler the task scheduler to use
 	 */
@@ -91,7 +91,7 @@ public class UserRegistryMessageHandler implements MessageHandler, ApplicationLi
 
 	/**
 	 * Configure the amount of time (in milliseconds) before a remote user
-	 * registry snapshot is considered expired.
+	 * register snapshot is considered expired.
 	 * <p>By default this is set to 20 seconds (value of 20000).
 	 * @param milliseconds the expiration period in milliseconds
 	 */
@@ -101,7 +101,7 @@ public class UserRegistryMessageHandler implements MessageHandler, ApplicationLi
 	}
 
 	/**
-	 * Return the configured registry expiration period.
+	 * Return the configured register expiration period.
 	 */
 	public long getRegistryExpirationPeriod() {
 		return this.registryExpirationPeriod;

@@ -67,7 +67,7 @@ public class ResourceHandlerRegistry {
 
 
 	/**
-	 * Create a new resource handler registry for the given resource loader
+	 * Create a new resource handler register for the given resource loader
 	 * (typically an application context).
 	 * @param resourceLoader the resource loader to use
 	 */

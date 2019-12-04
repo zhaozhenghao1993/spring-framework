@@ -193,9 +193,9 @@ public class SpringContextResourceAdapter implements ResourceAdapter {
 	}
 
 	/**
-	 * Load the bean definitions into the given registry,
+	 * Load the bean definitions into the given register,
 	 * based on the specified configuration files.
-	 * @param registry the registry to load into
+	 * @param registry the register to load into
 	 * @param configLocations the parsed config locations
 	 * @see #setContextConfigLocation
 	 */

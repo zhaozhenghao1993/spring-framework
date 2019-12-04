@@ -163,7 +163,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	/**
 	 * Add a PropertyEditorRegistrar to be applied to all bean creation processes.
 	 * <p>Such a registrar creates new PropertyEditor instances and registers them
-	 * on the given registry, fresh for each bean creation attempt. This avoids
+	 * on the given register, fresh for each bean creation attempt. This avoids
 	 * the need for synchronization on custom editors; hence, it is generally
 	 * preferable to use this method instead of {@link #registerCustomEditor}.
 	 * @param registrar the PropertyEditorRegistrar to register

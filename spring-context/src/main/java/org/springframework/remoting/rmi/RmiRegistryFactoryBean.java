@@ -33,26 +33,26 @@ import org.springframework.lang.Nullable;
 
 /**
  * {@link FactoryBean} that locates a {@link java.rmi.registry.Registry} and
- * exposes it for bean references. Can also create a local RMI registry
+ * exposes it for bean references. Can also create a local RMI register
  * on the fly if none exists already.
  *
  * <p>Can be used to set up and pass around the actual Registry object to
  * applications objects that need to work with RMI. One example for such an
  * object that needs to work with RMI is Spring's {@link RmiServiceExporter},
  * which either works with a passed-in Registry reference or falls back to
- * the registry as specified by its local properties and defaults.
+ * the register as specified by its local properties and defaults.
  *
- * <p>Also useful to enforce creation of a local RMI registry at a given port,
+ * <p>Also useful to enforce creation of a local RMI register at a given port,
  * for example for a JMX connector. If used in conjunction with
  * {@link org.springframework.jmx.support.ConnectorServerFactoryBean},
  * it is recommended to mark the connector definition (ConnectorServerFactoryBean)
- * as "depends-on" the registry definition (RmiRegistryFactoryBean),
- * to guarantee starting up the registry first.
+ * as "depends-on" the register definition (RmiRegistryFactoryBean),
+ * to guarantee starting up the register first.
  *
  * <p>Note: The implementation of this class mirrors the corresponding logic
  * in {@link RmiServiceExporter}, and also offers the same customization hooks.
- * RmiServiceExporter implements its own registry lookup as a convenience:
- * It is very common to simply rely on the registry defaults.
+ * RmiServiceExporter implements its own register lookup as a convenience:
+ * It is very common to simply rely on the register defaults.
  *
  * @author Juergen Hoeller
  * @since 1.2.3
@@ -81,7 +81,7 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 
 
 	/**
-	 * Set the host of the registry for the exported RMI service,
+	 * Set the host of the register for the exported RMI service,
 	 * i.e. {@code rmi://HOST:port/name}
 	 * <p>Default is localhost.
 	 */
@@ -90,14 +90,14 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 	}
 
 	/**
-	 * Return the host of the registry for the exported RMI service.
+	 * Return the host of the register for the exported RMI service.
 	 */
 	public String getHost() {
 		return this.host;
 	}
 
 	/**
-	 * Set the port of the registry for the exported RMI service,
+	 * Set the port of the register for the exported RMI service,
 	 * i.e. {@code rmi://host:PORT/name}
 	 * <p>Default is {@code Registry.REGISTRY_PORT} (1099).
 	 */
@@ -106,14 +106,14 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 	}
 
 	/**
-	 * Return the port of the registry for the exported RMI service.
+	 * Return the port of the register for the exported RMI service.
 	 */
 	public int getPort() {
 		return this.port;
 	}
 
 	/**
-	 * Set a custom RMI client socket factory to use for the RMI registry.
+	 * Set a custom RMI client socket factory to use for the RMI register.
 	 * <p>If the given object also implements {@code java.rmi.server.RMIServerSocketFactory},
 	 * it will automatically be registered as server socket factory too.
 	 * @see #setServerSocketFactory
@@ -126,7 +126,7 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 	}
 
 	/**
-	 * Set a custom RMI server socket factory to use for the RMI registry.
+	 * Set a custom RMI server socket factory to use for the RMI register.
 	 * <p>Only needs to be specified when the client socket factory does not
 	 * implement {@code java.rmi.server.RMIServerSocketFactory} already.
 	 * @see #setClientSocketFactory
@@ -139,11 +139,11 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 	}
 
 	/**
-	 * Set whether to always create the registry in-process,
-	 * not attempting to locate an existing registry at the specified port.
+	 * Set whether to always create the register in-process,
+	 * not attempting to locate an existing register at the specified port.
 	 * <p>Default is "false". Switch this flag to "true" in order to avoid
-	 * the overhead of locating an existing registry when you always
-	 * intend to create a new registry in any case.
+	 * the overhead of locating an existing register when you always
+	 * intend to create a new register in any case.
 	 */
 	public void setAlwaysCreate(boolean alwaysCreate) {
 		this.alwaysCreate = alwaysCreate;
@@ -152,7 +152,7 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// Check socket factories for registry.
+		// Check socket factories for register.
 		if (this.clientSocketFactory instanceof RMIServerSocketFactory) {
 			this.serverSocketFactory = (RMIServerSocketFactory) this.clientSocketFactory;
 		}
@@ -162,20 +162,20 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 					"Both RMIClientSocketFactory and RMIServerSocketFactory or none required");
 		}
 
-		// Fetch RMI registry to expose.
+		// Fetch RMI register to expose.
 		this.registry = getRegistry(this.host, this.port, this.clientSocketFactory, this.serverSocketFactory);
 	}
 
 
 	/**
-	 * Locate or create the RMI registry.
-	 * @param registryHost the registry host to use (if this is specified,
-	 * no implicit creation of a RMI registry will happen)
-	 * @param registryPort the registry port to use
-	 * @param clientSocketFactory the RMI client socket factory for the registry (if any)
-	 * @param serverSocketFactory the RMI server socket factory for the registry (if any)
-	 * @return the RMI registry
-	 * @throws java.rmi.RemoteException if the registry couldn't be located or created
+	 * Locate or create the RMI register.
+	 * @param registryHost the register host to use (if this is specified,
+	 * no implicit creation of a RMI register will happen)
+	 * @param registryPort the register port to use
+	 * @param clientSocketFactory the RMI client socket factory for the register (if any)
+	 * @param serverSocketFactory the RMI server socket factory for the register (if any)
+	 * @return the RMI register
+	 * @throws java.rmi.RemoteException if the register couldn't be located or created
 	 */
 	protected Registry getRegistry(String registryHost, int registryPort,
 			@Nullable RMIClientSocketFactory clientSocketFactory, @Nullable RMIServerSocketFactory serverSocketFactory)
@@ -184,7 +184,7 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 		if (registryHost != null) {
 			// Host explicitly specified: only lookup possible.
 			if (logger.isInfoEnabled()) {
-				logger.info("Looking for RMI registry at port '" + registryPort + "' of host [" + registryHost + "]");
+				logger.info("Looking for RMI register at port '" + registryPort + "' of host [" + registryHost + "]");
 			}
 			Registry reg = LocateRegistry.getRegistry(registryHost, registryPort, clientSocketFactory);
 			testRegistry(reg);
@@ -197,12 +197,12 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 	}
 
 	/**
-	 * Locate or create the RMI registry.
-	 * @param registryPort the registry port to use
-	 * @param clientSocketFactory the RMI client socket factory for the registry (if any)
-	 * @param serverSocketFactory the RMI server socket factory for the registry (if any)
-	 * @return the RMI registry
-	 * @throws RemoteException if the registry couldn't be located or created
+	 * Locate or create the RMI register.
+	 * @param registryPort the register port to use
+	 * @param clientSocketFactory the RMI client socket factory for the register (if any)
+	 * @param serverSocketFactory the RMI server socket factory for the register (if any)
+	 * @return the RMI register
+	 * @throws RemoteException if the register couldn't be located or created
 	 */
 	protected Registry getRegistry(int registryPort,
 			@Nullable RMIClientSocketFactory clientSocketFactory, @Nullable RMIServerSocketFactory serverSocketFactory)
@@ -210,24 +210,24 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 
 		if (clientSocketFactory != null) {
 			if (this.alwaysCreate) {
-				logger.info("Creating new RMI registry");
+				logger.info("Creating new RMI register");
 				this.created = true;
 				return LocateRegistry.createRegistry(registryPort, clientSocketFactory, serverSocketFactory);
 			}
 			if (logger.isInfoEnabled()) {
-				logger.info("Looking for RMI registry at port '" + registryPort + "', using custom socket factory");
+				logger.info("Looking for RMI register at port '" + registryPort + "', using custom socket factory");
 			}
 			synchronized (LocateRegistry.class) {
 				try {
-					// Retrieve existing registry.
+					// Retrieve existing register.
 					Registry reg = LocateRegistry.getRegistry(null, registryPort, clientSocketFactory);
 					testRegistry(reg);
 					return reg;
 				}
 				catch (RemoteException ex) {
-					logger.debug("RMI registry access threw exception", ex);
-					logger.info("Could not detect RMI registry - creating new one");
-					// Assume no registry found -> create new one.
+					logger.debug("RMI register access threw exception", ex);
+					logger.info("Could not detect RMI register - creating new one");
+					// Assume no register found -> create new one.
 					this.created = true;
 					return LocateRegistry.createRegistry(registryPort, clientSocketFactory, serverSocketFactory);
 				}
@@ -240,31 +240,31 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 	}
 
 	/**
-	 * Locate or create the RMI registry.
-	 * @param registryPort the registry port to use
-	 * @return the RMI registry
-	 * @throws RemoteException if the registry couldn't be located or created
+	 * Locate or create the RMI register.
+	 * @param registryPort the register port to use
+	 * @return the RMI register
+	 * @throws RemoteException if the register couldn't be located or created
 	 */
 	protected Registry getRegistry(int registryPort) throws RemoteException {
 		if (this.alwaysCreate) {
-			logger.info("Creating new RMI registry");
+			logger.info("Creating new RMI register");
 			this.created = true;
 			return LocateRegistry.createRegistry(registryPort);
 		}
 		if (logger.isInfoEnabled()) {
-			logger.info("Looking for RMI registry at port '" + registryPort + "'");
+			logger.info("Looking for RMI register at port '" + registryPort + "'");
 		}
 		synchronized (LocateRegistry.class) {
 			try {
-				// Retrieve existing registry.
+				// Retrieve existing register.
 				Registry reg = LocateRegistry.getRegistry(registryPort);
 				testRegistry(reg);
 				return reg;
 			}
 			catch (RemoteException ex) {
-				logger.debug("RMI registry access threw exception", ex);
-				logger.info("Could not detect RMI registry - creating new one");
-				// Assume no registry found -> create new one.
+				logger.debug("RMI register access threw exception", ex);
+				logger.info("Could not detect RMI register - creating new one");
+				// Assume no register found -> create new one.
 				this.created = true;
 				return LocateRegistry.createRegistry(registryPort);
 			}
@@ -272,11 +272,11 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 	}
 
 	/**
-	 * Test the given RMI registry, calling some operation on it to
+	 * Test the given RMI register, calling some operation on it to
 	 * check whether it is still active.
 	 * <p>Default implementation calls {@code Registry.list()}.
-	 * @param registry the RMI registry to test
-	 * @throws RemoteException if thrown by registry methods
+	 * @param registry the RMI register to test
+	 * @throws RemoteException if thrown by register methods
 	 * @see java.rmi.registry.Registry#list()
 	 */
 	protected void testRegistry(Registry registry) throws RemoteException {
@@ -301,13 +301,13 @@ public class RmiRegistryFactoryBean implements FactoryBean<Registry>, Initializi
 
 
 	/**
-	 * Unexport the RMI registry on bean factory shutdown,
-	 * provided that this bean actually created a registry.
+	 * Unexport the RMI register on bean factory shutdown,
+	 * provided that this bean actually created a register.
 	 */
 	@Override
 	public void destroy() throws RemoteException {
 		if (this.created) {
-			logger.info("Unexporting RMI registry");
+			logger.info("Unexporting RMI register");
 			UnicastRemoteObject.unexportObject(this.registry, true);
 		}
 	}

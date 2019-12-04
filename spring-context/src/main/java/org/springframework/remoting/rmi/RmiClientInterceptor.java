@@ -121,7 +121,7 @@ public class RmiClientInterceptor extends RemoteInvocationBasedAccessor
 	}
 
 	/**
-	 * Set a custom RMI client socket factory to use for accessing the RMI registry.
+	 * Set a custom RMI client socket factory to use for accessing the RMI register.
 	 * @see java.rmi.server.RMIClientSocketFactory
 	 * @see java.rmi.registry.LocateRegistry#getRegistry(String, int, RMIClientSocketFactory)
 	 */
@@ -178,7 +178,7 @@ public class RmiClientInterceptor extends RemoteInvocationBasedAccessor
 		try {
 			Remote stub = null;
 			if (this.registryClientSocketFactory != null) {
-				// RMIClientSocketFactory specified for registry access.
+				// RMIClientSocketFactory specified for register access.
 				// Unfortunately, due to RMI API limitations, this means
 				// that we need to parse the RMI URL ourselves and perform
 				// straight LocateRegistry.getRegistry/Registry.lookup calls.
@@ -210,7 +210,7 @@ public class RmiClientInterceptor extends RemoteInvocationBasedAccessor
 		}
 		catch (NotBoundException ex) {
 			throw new RemoteLookupFailureException(
-					"Could not find RMI service [" + getServiceUrl() + "] in RMI registry", ex);
+					"Could not find RMI service [" + getServiceUrl() + "] in RMI register", ex);
 		}
 		catch (RemoteException ex) {
 			throw new RemoteLookupFailureException("Lookup of RMI stub failed", ex);

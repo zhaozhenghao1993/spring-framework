@@ -64,16 +64,16 @@ class TypeConverterDelegate {
 
 
 	/**
-	 * Create a new TypeConverterDelegate for the given editor registry.
-	 * @param propertyEditorRegistry the editor registry to use
+	 * Create a new TypeConverterDelegate for the given editor register.
+	 * @param propertyEditorRegistry the editor register to use
 	 */
 	public TypeConverterDelegate(PropertyEditorRegistrySupport propertyEditorRegistry) {
 		this(propertyEditorRegistry, null);
 	}
 
 	/**
-	 * Create a new TypeConverterDelegate for the given editor registry and bean instance.
-	 * @param propertyEditorRegistry the editor registry to use
+	 * Create a new TypeConverterDelegate for the given editor register and bean instance.
+	 * @param propertyEditorRegistry the editor register to use
 	 * @param targetObject the target object to work on (as context that can be passed to editors)
 	 */
 	public TypeConverterDelegate(PropertyEditorRegistrySupport propertyEditorRegistry, @Nullable Object targetObject) {

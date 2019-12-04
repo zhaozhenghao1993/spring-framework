@@ -133,16 +133,16 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 
 	/**
 	 * Register the supplied {@link BeanDefinitionHolder bean} with the supplied
-	 * {@link BeanDefinitionRegistry registry}.
+	 * {@link BeanDefinitionRegistry register}.
 	 * <p>Subclasses can override this method to control whether or not the supplied
 	 * {@link BeanDefinitionHolder bean} is actually even registered, or to
 	 * register even more beans.
 	 * <p>The default implementation registers the supplied {@link BeanDefinitionHolder bean}
-	 * with the supplied {@link BeanDefinitionRegistry registry} only if the {@code isNested}
+	 * with the supplied {@link BeanDefinitionRegistry register} only if the {@code isNested}
 	 * parameter is {@code false}, because one typically does not want inner beans
 	 * to be registered as top level beans.
 	 * @param definition the bean definition to be registered
-	 * @param registry the registry that the bean is to be registered with
+	 * @param registry the register that the bean is to be registered with
 	 * @see BeanDefinitionReaderUtils#registerBeanDefinition(BeanDefinitionHolder, BeanDefinitionRegistry)
 	 */
 	protected void registerBeanDefinition(BeanDefinitionHolder definition, BeanDefinitionRegistry registry) {

@@ -28,7 +28,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
 
 /**
- * A registry for configuring message broker options.
+ * A register for configuring message broker options.
  *
  * @author Rossen Stoyanchev
  * @author Sebastien Deleuze
@@ -190,7 +190,7 @@ public class MessageBrokerRegistry {
 	/**
 	 * Configure the cache limit to apply for registrations with the broker.
 	 * <p>This is currently only applied for the destination cache in the
-	 * subscription registry. The default cache limit there is 1024.
+	 * subscription register. The default cache limit there is 1024.
 	 * @since 4.3.2
 	 * @see org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry#setCacheLimit
 	 */

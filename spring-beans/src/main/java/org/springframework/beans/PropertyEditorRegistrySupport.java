@@ -136,7 +136,7 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 	//---------------------------------------------------------------------
 
 	/**
-	 * Activate the default editors for this registry instance,
+	 * Activate the default editors for this register instance,
 	 * allowing for lazily registering default editors when needed.
 	 */
 	protected void registerDefaultEditors() {
@@ -195,7 +195,7 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 	}
 
 	/**
-	 * Actually register the default editors for this registry instance.
+	 * Actually register the default editors for this register instance.
 	 */
 	private void createDefaultEditors() {
 		this.defaultEditors = new HashMap<>(64);
@@ -269,8 +269,8 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 	}
 
 	/**
-	 * Copy the default editors registered in this instance to the given target registry.
-	 * @param target the target registry to copy to
+	 * Copy the default editors registered in this instance to the given target register.
+	 * @param target the target register to copy to
 	 */
 	protected void copyDefaultEditorsTo(PropertyEditorRegistrySupport target) {
 		target.defaultEditorsActive = this.defaultEditorsActive;
@@ -338,7 +338,7 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 	}
 
 	/**
-	 * Determine whether this registry contains a custom editor
+	 * Determine whether this register contains a custom editor
 	 * for the specified array/collection element.
 	 * @param elementType the target type of the element
 	 * (can be {@code null} if not known)
@@ -453,9 +453,9 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 	}
 
 	/**
-	 * Copy the custom editors registered in this instance to the given target registry.
-	 * @param target the target registry to copy to
-	 * @param nestedProperty the nested property path of the target registry, if any.
+	 * Copy the custom editors registered in this instance to the given target register.
+	 * @param target the target register to copy to
+	 * @param nestedProperty the nested property path of the target register, if any.
 	 * If this is non-null, only editors registered for a path below this nested property
 	 * will be copied. If this is null, all editors will be copied.
 	 */

@@ -114,7 +114,7 @@ public class ViewResolverRegistry {
 	}
 
 	private ContentNegotiatingViewResolver initContentNegotiatingViewResolver(View[] defaultViews) {
-		// ContentNegotiatingResolver in the registry: elevate its precedence!
+		// ContentNegotiatingResolver in the register: elevate its precedence!
 		this.order = (this.order != null ? this.order : Ordered.HIGHEST_PRECEDENCE);
 
 		if (this.contentNegotiatingResolver != null) {
@@ -256,7 +256,7 @@ public class ViewResolverRegistry {
 	}
 
 	/**
-	 * ViewResolver's registered through this registry are encapsulated in an
+	 * ViewResolver's registered through this register are encapsulated in an
 	 * instance of {@link org.springframework.web.servlet.view.ViewResolverComposite
 	 * ViewResolverComposite} and follow the order of registration.
 	 * This property determines the order of the ViewResolverComposite itself

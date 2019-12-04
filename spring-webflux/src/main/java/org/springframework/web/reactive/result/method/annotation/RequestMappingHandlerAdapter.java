@@ -124,7 +124,7 @@ public class RequestMappingHandlerAdapter implements HandlerAdapter, Application
 	}
 
 	/**
-	 * Configure the registry for adapting various reactive types.
+	 * Configure the register for adapting various reactive types.
 	 * <p>By default this is an instance of {@link ReactiveAdapterRegistry} with
 	 * default settings.
 	 */
@@ -133,7 +133,7 @@ public class RequestMappingHandlerAdapter implements HandlerAdapter, Application
 	}
 
 	/**
-	 * Return the configured registry for adapting reactive types.
+	 * Return the configured register for adapting reactive types.
 	 */
 	@Nullable
 	public ReactiveAdapterRegistry getReactiveAdapterRegistry() {

@@ -147,7 +147,7 @@ public class JndiRmiServiceExporter extends RmiBasedExporter implements Initiali
 
 	/**
 	 * Rebind the specified service to JNDI, for recovering in case
-	 * of the target registry having been restarted.
+	 * of the target register having been restarted.
 	 * @throws NamingException if service binding failed
 	 */
 	public void rebind() throws NamingException {

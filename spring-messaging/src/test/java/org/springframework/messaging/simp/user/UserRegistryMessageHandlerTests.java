@@ -77,7 +77,7 @@ public class UserRegistryMessageHandlerTests {
 		this.multiServerRegistry = new MultiServerUserRegistry(this.localRegistry);
 
 		this.handler = new UserRegistryMessageHandler(this.multiServerRegistry, brokerTemplate,
-				"/topic/simp-user-registry", this.taskScheduler);
+				"/topic/simp-user-register", this.taskScheduler);
 	}
 
 	@Test
@@ -122,7 +122,7 @@ public class UserRegistryMessageHandlerTests {
 		Message<?> message = captor.getValue();
 		assertNotNull(message);
 		MessageHeaders headers = message.getHeaders();
-		assertEquals("/topic/simp-user-registry", SimpMessageHeaderAccessor.getDestination(headers));
+		assertEquals("/topic/simp-user-register", SimpMessageHeaderAccessor.getDestination(headers));
 
 		MultiServerUserRegistry remoteRegistry = new MultiServerUserRegistry(mock(SimpUserRegistry.class));
 		remoteRegistry.addRemoteRegistryDto(message, this.converter, 20000);

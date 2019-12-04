@@ -436,13 +436,13 @@ public class MessageBrokerConfigurationTests {
 		assertEquals("/topic/unresolved-user-destination", handler1.getBroadcastDestination());
 
 		UserRegistryMessageHandler handler2 = context.getBean(UserRegistryMessageHandler.class);
-		assertEquals("/topic/simp-user-registry", handler2.getBroadcastDestination());
+		assertEquals("/topic/simp-user-register", handler2.getBroadcastDestination());
 
 		StompBrokerRelayMessageHandler relay = context.getBean(StompBrokerRelayMessageHandler.class);
 		assertNotNull(relay.getSystemSubscriptions());
 		assertEquals(2, relay.getSystemSubscriptions().size());
 		assertSame(handler1, relay.getSystemSubscriptions().get("/topic/unresolved-user-destination"));
-		assertSame(handler2, relay.getSystemSubscriptions().get("/topic/simp-user-registry"));
+		assertSame(handler2, relay.getSystemSubscriptions().get("/topic/simp-user-register"));
 	}
 
 	@Test
@@ -587,7 +587,7 @@ public class MessageBrokerConfigurationTests {
 		public void configureMessageBroker(MessageBrokerRegistry registry) {
 			registry.enableStompBrokerRelay("/topic", "/queue").setAutoStartup(true)
 					.setUserDestinationBroadcast("/topic/unresolved-user-destination")
-					.setUserRegistryBroadcast("/topic/simp-user-registry");
+					.setUserRegistryBroadcast("/topic/simp-user-register");
 		}
 	}
 

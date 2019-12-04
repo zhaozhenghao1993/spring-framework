@@ -39,7 +39,7 @@ public abstract class ConversionServiceFactory {
 	 * Register the given Converter objects with the given target ConverterRegistry.
 	 * @param converters the converter objects: implementing {@link Converter},
 	 * {@link ConverterFactory}, or {@link GenericConverter}
-	 * @param registry the target registry
+	 * @param registry the target register
 	 */
 	public static void registerConverters(@Nullable Set<?> converters, ConverterRegistry registry) {
 		if (converters != null) {

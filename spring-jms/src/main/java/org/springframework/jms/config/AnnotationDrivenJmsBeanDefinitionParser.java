@@ -57,7 +57,7 @@ class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser {
 			BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(
 					"org.springframework.jms.annotation.JmsListenerAnnotationBeanPostProcessor");
 			builder.getRawBeanDefinition().setSource(source);
-			String endpointRegistry = element.getAttribute("registry");
+			String endpointRegistry = element.getAttribute("register");
 			if (StringUtils.hasText(endpointRegistry)) {
 				builder.addPropertyReference("endpointRegistry", endpointRegistry);
 			}

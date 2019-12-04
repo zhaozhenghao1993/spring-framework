@@ -47,8 +47,8 @@ import org.springframework.format.datetime.DateFormatterRegistrar;
 final class JodaTimeConverters {
 
 	/**
-	 * Install the converters into the converter registry.
-	 * @param registry the converter registry
+	 * Install the converters into the converter register.
+	 * @param registry the converter register
 	 */
 	@SuppressWarnings("deprecation")
 	public static void registerConverters(ConverterRegistry registry) {

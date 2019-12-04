@@ -37,7 +37,7 @@ import org.springframework.util.PatternMatchUtils;
 
 /**
  * A bean definition scanner that detects bean candidates on the classpath,
- * registering corresponding bean definitions with a given registry ({@code BeanFactory}
+ * registering corresponding bean definitions with a given register ({@code BeanFactory}
  * or {@code ApplicationContext}).
  *
  * <p>Candidate classes are detected through configurable type filters. The
@@ -309,7 +309,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	}
 
 	/**
-	 * Register the specified bean with the given registry.
+	 * Register the specified bean with the given register.
 	 * <p>Can be overridden in subclasses, e.g. to adapt the registration
 	 * process or to register further bean definitions for each scanned bean.
 	 * @param definitionHolder the bean definition plus bean name for the bean
@@ -367,7 +367,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 
 	/**
-	 * Get the Environment from the given registry if possible, otherwise return a new
+	 * Get the Environment from the given register if possible, otherwise return a new
 	 * StandardEnvironment.
 	 */
 	private static Environment getOrCreateEnvironment(BeanDefinitionRegistry registry) {

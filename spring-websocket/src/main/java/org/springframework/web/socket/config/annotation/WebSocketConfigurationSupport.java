@@ -69,8 +69,8 @@ public class WebSocketConfigurationSupport {
 	 * &#064;EnableWebSocket
 	 * public class WebSocketConfig implements WebSocketConfigurer {
 	 *
-	 *   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-	 *     registry.addHandler(myWsHandler(), "/echo").withSockJS().setTaskScheduler(myScheduler());
+	 *   public void registerWebSocketHandlers(WebSocketHandlerRegistry register) {
+	 *     register.addHandler(myWsHandler(), "/echo").withSockJS().setTaskScheduler(myScheduler());
 	 *   }
 	 *
 	 *   // ...

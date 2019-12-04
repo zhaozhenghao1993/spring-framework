@@ -1,5 +1,7 @@
 package com.zhenghao.spring.mybatis.app;
 
+import com.zhenghao.spring.mybatis.dao.TestMapper;
+import com.zhenghao.spring.mybatis.factory.TestFactoryBean;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -22,10 +24,11 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ComponentScan("com.zhenghao.spring.mybatis")
-@MapperScan("com.zhenghao.spring.mybatis.dao")
+// @MapperScan("com.zhenghao.spring.mybatis.dao")
+@TestMapperScan
 public class AppConfig {
 
-	@Bean
+	/*@Bean
 	public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
 		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
 		factoryBean.setDataSource(dataSource());
@@ -40,5 +43,12 @@ public class AppConfig {
 		driverManagerDataSource.setUsername("root");
 		driverManagerDataSource.setPassword("root");
 		return driverManagerDataSource;
-	}
+	}*/
+
+	/*@Bean
+	public TestFactoryBean testFactoryBean() {
+		TestFactoryBean testFactoryBean = new TestFactoryBean();
+		testFactoryBean.setMapperInterface(TestMapper.class);
+		return testFactoryBean;
+	}*/
 }

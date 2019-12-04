@@ -173,7 +173,7 @@ public class GroovyBeanDefinitionReader extends AbstractBeanDefinitionReader imp
 	 * <p>The supplied {@code XmlBeanDefinitionReader} should typically
 	 * be pre-configured with XML validation disabled.
 	 * @param xmlBeanDefinitionReader the {@code XmlBeanDefinitionReader} to
-	 * derive the registry from and to delegate Groovy DSL loading to
+	 * derive the register from and to delegate Groovy DSL loading to
 	 */
 	public GroovyBeanDefinitionReader(XmlBeanDefinitionReader xmlBeanDefinitionReader) {
 		super(xmlBeanDefinitionReader.getRegistry());

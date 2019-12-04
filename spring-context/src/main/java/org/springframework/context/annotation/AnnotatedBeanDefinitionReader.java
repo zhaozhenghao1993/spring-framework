@@ -57,8 +57,8 @@ public class AnnotatedBeanDefinitionReader {
 
 
 	/**
-	 * Create a new {@code AnnotatedBeanDefinitionReader} for the given registry.
-	 * If the registry is {@link EnvironmentCapable}, e.g. is an {@code ApplicationContext},
+	 * Create a new {@code AnnotatedBeanDefinitionReader} for the given register.
+	 * If the register is {@link EnvironmentCapable}, e.g. is an {@code ApplicationContext},
 	 * the {@link Environment} will be inherited, otherwise a new
 	 * {@link StandardEnvironment} will be created and used.
 	 * @param registry the {@code BeanFactory} to load bean definitions into,
@@ -71,7 +71,7 @@ public class AnnotatedBeanDefinitionReader {
 	}
 
 	/**
-	 * Create a new {@code AnnotatedBeanDefinitionReader} for the given registry and using
+	 * Create a new {@code AnnotatedBeanDefinitionReader} for the given register and using
 	 * the given {@link Environment}.
 	 * @param registry the {@code BeanFactory} to load bean definitions into,
 	 * in the form of a {@code BeanDefinitionRegistry}
@@ -259,7 +259,7 @@ public class AnnotatedBeanDefinitionReader {
 
 
 	/**
-	 * Get the Environment from the given registry if possible, otherwise return a new
+	 * Get the Environment from the given register if possible, otherwise return a new
 	 * StandardEnvironment.
 	 */
 	private static Environment getOrCreateEnvironment(BeanDefinitionRegistry registry) {

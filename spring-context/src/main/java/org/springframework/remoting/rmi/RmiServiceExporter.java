@@ -54,7 +54,7 @@ import org.springframework.lang.Nullable;
  * on your network configuration, in some cases it will resolve the IP to the loopback
  * address. To ensure that RMI will use the host name bound to the correct network
  * interface, you should pass the {@code java.rmi.server.hostname} property to the
- * JVM that will export the registry and/or the service using the "-D" JVM argument.
+ * JVM that will export the register and/or the service using the "-D" JVM argument.
  * For example: {@code -Djava.rmi.server.hostname=myserver.com}
  *
  * @author Juergen Hoeller
@@ -138,12 +138,12 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 	}
 
 	/**
-	 * Specify the RMI registry to register the exported service with.
+	 * Specify the RMI register to register the exported service with.
 	 * Typically used in combination with RmiRegistryFactoryBean.
-	 * <p>Alternatively, you can specify all registry properties locally.
-	 * This exporter will then try to locate the specified registry,
+	 * <p>Alternatively, you can specify all register properties locally.
+	 * This exporter will then try to locate the specified register,
 	 * automatically creating a new local one if appropriate.
-	 * <p>Default is a local registry at the default port (1099),
+	 * <p>Default is a local register at the default port (1099),
 	 * created on the fly if necessary.
 	 * @see RmiRegistryFactoryBean
 	 * @see #setRegistryHost
@@ -156,7 +156,7 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 	}
 
 	/**
-	 * Set the host of the registry for the exported RMI service,
+	 * Set the host of the register for the exported RMI service,
 	 * i.e. {@code rmi://HOST:port/name}
 	 * <p>Default is localhost.
 	 */
@@ -165,7 +165,7 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 	}
 
 	/**
-	 * Set the port of the registry for the exported RMI service,
+	 * Set the port of the register for the exported RMI service,
 	 * i.e. {@code rmi://host:PORT/name}
 	 * <p>Default is {@code Registry.REGISTRY_PORT} (1099).
 	 * @see java.rmi.registry.Registry#REGISTRY_PORT
@@ -175,7 +175,7 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 	}
 
 	/**
-	 * Set a custom RMI client socket factory to use for the RMI registry.
+	 * Set a custom RMI client socket factory to use for the RMI register.
 	 * <p>If the given object also implements {@code java.rmi.server.RMIServerSocketFactory},
 	 * it will automatically be registered as server socket factory too.
 	 * @see #setRegistryServerSocketFactory
@@ -188,7 +188,7 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 	}
 
 	/**
-	 * Set a custom RMI server socket factory to use for the RMI registry.
+	 * Set a custom RMI server socket factory to use for the RMI register.
 	 * <p>Only needs to be specified when the client socket factory does not
 	 * implement {@code java.rmi.server.RMIServerSocketFactory} already.
 	 * @see #setRegistryClientSocketFactory
@@ -201,20 +201,20 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 	}
 
 	/**
-	 * Set whether to always create the registry in-process,
-	 * not attempting to locate an existing registry at the specified port.
+	 * Set whether to always create the register in-process,
+	 * not attempting to locate an existing register at the specified port.
 	 * <p>Default is "false". Switch this flag to "true" in order to avoid
-	 * the overhead of locating an existing registry when you always
-	 * intend to create a new registry in any case.
+	 * the overhead of locating an existing register when you always
+	 * intend to create a new register in any case.
 	 */
 	public void setAlwaysCreateRegistry(boolean alwaysCreateRegistry) {
 		this.alwaysCreateRegistry = alwaysCreateRegistry;
 	}
 
 	/**
-	 * Set whether to replace an existing binding in the RMI registry,
+	 * Set whether to replace an existing binding in the RMI register,
 	 * that is, whether to simply override an existing binding with the
-	 * specified service in case of a naming conflict in the registry.
+	 * specified service in case of a naming conflict in the register.
 	 * <p>Default is "true", assuming that an existing binding for this
 	 * exporter's service name is an accidental leftover from a previous
 	 * execution. Switch this to "false" to make the exporter fail in such
@@ -232,7 +232,7 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 
 	/**
 	 * Initialize this service exporter, registering the service as RMI object.
-	 * <p>Creates an RMI registry on the specified port if none exists.
+	 * <p>Creates an RMI register on the specified port if none exists.
 	 * @throws RemoteException if service registration failed
 	 */
 	public void prepare() throws RemoteException {
@@ -252,18 +252,18 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 					"Both RMIClientSocketFactory and RMIServerSocketFactory or none required");
 		}
 
-		// Check socket factories for RMI registry.
+		// Check socket factories for RMI register.
 		if (this.registryClientSocketFactory instanceof RMIServerSocketFactory) {
 			this.registryServerSocketFactory = (RMIServerSocketFactory) this.registryClientSocketFactory;
 		}
 		if (this.registryClientSocketFactory == null && this.registryServerSocketFactory != null) {
 			throw new IllegalArgumentException(
-					"RMIServerSocketFactory without RMIClientSocketFactory for registry not supported");
+					"RMIServerSocketFactory without RMIClientSocketFactory for register not supported");
 		}
 
 		this.createdRegistry = false;
 
-		// Determine RMI registry to use.
+		// Determine RMI register to use.
 		if (this.registry == null) {
 			this.registry = getRegistry(this.registryHost, this.registryPort,
 				this.registryClientSocketFactory, this.registryServerSocketFactory);
@@ -274,7 +274,7 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 		this.exportedObject = getObjectToExport();
 
 		if (logger.isInfoEnabled()) {
-			logger.info("Binding service '" + this.serviceName + "' to RMI registry: " + this.registry);
+			logger.info("Binding service '" + this.serviceName + "' to RMI register: " + this.registry);
 		}
 
 		// Export RMI object.
@@ -286,7 +286,7 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 			UnicastRemoteObject.exportObject(this.exportedObject, this.servicePort);
 		}
 
-		// Bind RMI object to registry.
+		// Bind RMI object to register.
 		try {
 			if (this.replaceExistingBinding) {
 				this.registry.rebind(this.serviceName, this.exportedObject);
@@ -310,14 +310,14 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 
 
 	/**
-	 * Locate or create the RMI registry for this exporter.
-	 * @param registryHost the registry host to use (if this is specified,
-	 * no implicit creation of a RMI registry will happen)
-	 * @param registryPort the registry port to use
-	 * @param clientSocketFactory the RMI client socket factory for the registry (if any)
-	 * @param serverSocketFactory the RMI server socket factory for the registry (if any)
-	 * @return the RMI registry
-	 * @throws RemoteException if the registry couldn't be located or created
+	 * Locate or create the RMI register for this exporter.
+	 * @param registryHost the register host to use (if this is specified,
+	 * no implicit creation of a RMI register will happen)
+	 * @param registryPort the register port to use
+	 * @param clientSocketFactory the RMI client socket factory for the register (if any)
+	 * @param serverSocketFactory the RMI server socket factory for the register (if any)
+	 * @return the RMI register
+	 * @throws RemoteException if the register couldn't be located or created
 	 */
 	protected Registry getRegistry(String registryHost, int registryPort,
 			@Nullable RMIClientSocketFactory clientSocketFactory, @Nullable RMIServerSocketFactory serverSocketFactory)
@@ -326,7 +326,7 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 		if (registryHost != null) {
 			// Host explicitly specified: only lookup possible.
 			if (logger.isInfoEnabled()) {
-				logger.info("Looking for RMI registry at port '" + registryPort + "' of host [" + registryHost + "]");
+				logger.info("Looking for RMI register at port '" + registryPort + "' of host [" + registryHost + "]");
 			}
 			Registry reg = LocateRegistry.getRegistry(registryHost, registryPort, clientSocketFactory);
 			testRegistry(reg);
@@ -339,12 +339,12 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 	}
 
 	/**
-	 * Locate or create the RMI registry for this exporter.
-	 * @param registryPort the registry port to use
-	 * @param clientSocketFactory the RMI client socket factory for the registry (if any)
-	 * @param serverSocketFactory the RMI server socket factory for the registry (if any)
-	 * @return the RMI registry
-	 * @throws RemoteException if the registry couldn't be located or created
+	 * Locate or create the RMI register for this exporter.
+	 * @param registryPort the register port to use
+	 * @param clientSocketFactory the RMI client socket factory for the register (if any)
+	 * @param serverSocketFactory the RMI server socket factory for the register (if any)
+	 * @return the RMI register
+	 * @throws RemoteException if the register couldn't be located or created
 	 */
 	protected Registry getRegistry(int registryPort,
 			@Nullable RMIClientSocketFactory clientSocketFactory, @Nullable RMIServerSocketFactory serverSocketFactory)
@@ -352,23 +352,23 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 
 		if (clientSocketFactory != null) {
 			if (this.alwaysCreateRegistry) {
-				logger.info("Creating new RMI registry");
+				logger.info("Creating new RMI register");
 				return LocateRegistry.createRegistry(registryPort, clientSocketFactory, serverSocketFactory);
 			}
 			if (logger.isInfoEnabled()) {
-				logger.info("Looking for RMI registry at port '" + registryPort + "', using custom socket factory");
+				logger.info("Looking for RMI register at port '" + registryPort + "', using custom socket factory");
 			}
 			synchronized (LocateRegistry.class) {
 				try {
-					// Retrieve existing registry.
+					// Retrieve existing register.
 					Registry reg = LocateRegistry.getRegistry(null, registryPort, clientSocketFactory);
 					testRegistry(reg);
 					return reg;
 				}
 				catch (RemoteException ex) {
-					logger.debug("RMI registry access threw exception", ex);
-					logger.info("Could not detect RMI registry - creating new one");
-					// Assume no registry found -> create new one.
+					logger.debug("RMI register access threw exception", ex);
+					logger.info("Could not detect RMI register - creating new one");
+					// Assume no register found -> create new one.
 					return LocateRegistry.createRegistry(registryPort, clientSocketFactory, serverSocketFactory);
 				}
 			}
@@ -380,41 +380,41 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 	}
 
 	/**
-	 * Locate or create the RMI registry for this exporter.
-	 * @param registryPort the registry port to use
-	 * @return the RMI registry
-	 * @throws RemoteException if the registry couldn't be located or created
+	 * Locate or create the RMI register for this exporter.
+	 * @param registryPort the register port to use
+	 * @return the RMI register
+	 * @throws RemoteException if the register couldn't be located or created
 	 */
 	protected Registry getRegistry(int registryPort) throws RemoteException {
 		if (this.alwaysCreateRegistry) {
-			logger.info("Creating new RMI registry");
+			logger.info("Creating new RMI register");
 			return LocateRegistry.createRegistry(registryPort);
 		}
 		if (logger.isInfoEnabled()) {
-			logger.info("Looking for RMI registry at port '" + registryPort + "'");
+			logger.info("Looking for RMI register at port '" + registryPort + "'");
 		}
 		synchronized (LocateRegistry.class) {
 			try {
-				// Retrieve existing registry.
+				// Retrieve existing register.
 				Registry reg = LocateRegistry.getRegistry(registryPort);
 				testRegistry(reg);
 				return reg;
 			}
 			catch (RemoteException ex) {
-				logger.debug("RMI registry access threw exception", ex);
-				logger.info("Could not detect RMI registry - creating new one");
-				// Assume no registry found -> create new one.
+				logger.debug("RMI register access threw exception", ex);
+				logger.info("Could not detect RMI register - creating new one");
+				// Assume no register found -> create new one.
 				return LocateRegistry.createRegistry(registryPort);
 			}
 		}
 	}
 
 	/**
-	 * Test the given RMI registry, calling some operation on it to
+	 * Test the given RMI register, calling some operation on it to
 	 * check whether it is still active.
 	 * <p>Default implementation calls {@code Registry.list()}.
-	 * @param registry the RMI registry to test
-	 * @throws RemoteException if thrown by registry methods
+	 * @param registry the RMI register to test
+	 * @throws RemoteException if thrown by register methods
 	 * @see java.rmi.registry.Registry#list()
 	 */
 	protected void testRegistry(Registry registry) throws RemoteException {
@@ -423,20 +423,20 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 
 
 	/**
-	 * Unbind the RMI service from the registry on bean factory shutdown.
+	 * Unbind the RMI service from the register on bean factory shutdown.
 	 */
 	@Override
 	public void destroy() throws RemoteException {
 		if (logger.isInfoEnabled()) {
 			logger.info("Unbinding RMI service '" + this.serviceName +
-					"' from registry" + (this.createdRegistry ? (" at port '" + this.registryPort + "'") : ""));
+					"' from register" + (this.createdRegistry ? (" at port '" + this.registryPort + "'") : ""));
 		}
 		try {
 			this.registry.unbind(this.serviceName);
 		}
 		catch (NotBoundException ex) {
 			if (logger.isWarnEnabled()) {
-				logger.warn("RMI service '" + this.serviceName + "' is not bound to registry" +
+				logger.warn("RMI service '" + this.serviceName + "' is not bound to register" +
 						(this.createdRegistry ? (" at port '" + this.registryPort + "' anymore") : ""), ex);
 			}
 		}

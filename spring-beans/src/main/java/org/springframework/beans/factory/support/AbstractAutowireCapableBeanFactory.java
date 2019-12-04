@@ -100,7 +100,7 @@ import org.springframework.util.StringUtils;
  * a search. For other factory styles, simplified matching algorithms can be implemented.
  *
  * <p>Note that this class does <i>not</i> assume or implement bean definition
- * registry capabilities. See {@link DefaultListableBeanFactory} for an implementation
+ * register capabilities. See {@link DefaultListableBeanFactory} for an implementation
  * of the {@link org.springframework.beans.factory.ListableBeanFactory} and
  * {@link BeanDefinitionRegistry} interfaces, which represent the API and SPI
  * view of such a factory, respectively.

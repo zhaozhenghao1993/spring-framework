@@ -295,7 +295,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	}
 
 	/**
-	 * Process the given alias element, registering the alias with the registry.
+	 * Process the given alias element, registering the alias with the register.
 	 */
 	protected void processAliasRegistration(Element ele) {
 		// 获取 beanName
@@ -327,7 +327,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 	/**
 	 * Process the given bean element, parsing the bean definition
-	 * and registering it with the registry.
+	 * and registering it with the register.
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
 		// 委托 BeanDefinitionParserDelegate 的 parseBeanDefinitionElement 方法进行元素解析，返回

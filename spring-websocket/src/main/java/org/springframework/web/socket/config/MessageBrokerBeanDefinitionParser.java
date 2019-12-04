@@ -174,7 +174,7 @@ class MessageBrokerBeanDefinitionParser implements BeanDefinitionParser {
 
 	private RuntimeBeanReference registerUserRegistry(Element element, ParserContext context, @Nullable Object source) {
 		Element relayElement = DomUtils.getChildElementByTagName(element, "stomp-broker-relay");
-		boolean multiServer = (relayElement != null && relayElement.hasAttribute("user-registry-broadcast"));
+		boolean multiServer = (relayElement != null && relayElement.hasAttribute("user-register-broadcast"));
 
 		if (multiServer) {
 			RootBeanDefinition localRegistryBeanDef = new RootBeanDefinition(DefaultSimpUserRegistry.class);
@@ -425,8 +425,8 @@ class MessageBrokerBeanDefinitionParser implements BeanDefinitionParser {
 				String destination = brokerRelayElem.getAttribute("user-destination-broadcast");
 				map.put(destination, userDestHandler);
 			}
-			if (brokerRelayElem.hasAttribute("user-registry-broadcast")) {
-				String destination = brokerRelayElem.getAttribute("user-registry-broadcast");
+			if (brokerRelayElem.hasAttribute("user-register-broadcast")) {
+				String destination = brokerRelayElem.getAttribute("user-register-broadcast");
 				map.put(destination, registerUserRegistryMessageHandler(userRegistry,
 						brokerTemplate, destination, context, source));
 			}

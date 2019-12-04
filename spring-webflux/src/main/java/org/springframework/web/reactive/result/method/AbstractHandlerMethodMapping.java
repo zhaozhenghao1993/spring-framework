@@ -108,7 +108,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	}
 
 	/**
-	 * Return the internal mapping registry. Provided for testing purposes.
+	 * Return the internal mapping register. Provided for testing purposes.
 	 */
 	MappingRegistry getMappingRegistry() {
 		return this.mappingRegistry;
@@ -413,7 +413,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 
 	/**
-	 * A registry that maintains all mappings to handler methods, exposing methods
+	 * A register that maintains all mappings to handler methods, exposing methods
 	 * to perform lookups and providing concurrent access.
 	 *
 	 * <p>Package-private for testing purposes.

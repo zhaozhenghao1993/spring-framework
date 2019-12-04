@@ -421,7 +421,7 @@ public abstract class AbstractMessageBrokerConfiguration implements ApplicationC
 	}
 
 	/**
-	 * Create the user registry that provides access to local users.
+	 * Create the user register that provides access to local users.
 	 */
 	protected abstract SimpUserRegistry createLocalUserRegistry();
 
