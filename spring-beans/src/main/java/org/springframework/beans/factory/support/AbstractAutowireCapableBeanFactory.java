@@ -574,6 +574,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				// bean 合并后的处理， Autowired 注解正是通过此方法实现诸如类型的预解析
 				try {
 					// 第三次调用执行后置处理器
+					// 找到容器中注册的所有BeanPostProcessor中每一个MergedBeanDefinitionPostProcessor，
+					// 将它们应用到指定的RootBeanDefinition mbd上，这里 mbd 其实就是一个 MergedBeanDefinition
+					// AutowiredAnnotationBeanPostProcessor类把正在被spring实例化的bean进行@Autowired和@Value扫描，
+					// 扫描到类里面属性和方法上面如果有注解，就会把对应的方法或者属性封装起来，最终封装成InjectionMetadata对象。
+					// AutowiredAnnotationBeanPostProcessor类的工作就完成了，让我们总结一下这个类的作用，
+					// 其实这个类就是在实例化某个bean时，对bean中的属性或者方法进行扫描，扫描的是@Autowired和@Value注解，
+					// 一旦发现方法或者属性上有这些注解，就把属性或者方法封装成AutowiredFieldElement或者AutowiredMethodElement对象，
+					// 这个对象有一个Member，属性描述对象PropertyDescriptor，属性描述对象可以对属性进行反射读和写操作。
+					// 最后把这些对象封装成InjectionMetadata对象，这些对象封装了类Class和集合，
+					// 集合里面装了AutowiredFieldElement或者AutowiredMethodElement对象。
+					// 这样AutowiredAnnotationBeanPostProcessor类的装配工作就完成了，
+					// 在后续IOC，依赖注入，对bean进行依赖注入时就可以根据InjectionMetadata对象里面封装的内容进行属性赋值了。
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -609,6 +621,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			 */
 			// 第四次执行后置处理器，判断是否需要 AOP
 			// 这里为什么存入 ObjectFactory， 为了取出对象时 可以对这个对象做一些改造 BeanPostProcessor
+			// 如果需要 AOP 代理的话，这个地方是先将 singletonFactory 放入二级缓存，
+			// 再解决循环依赖时， getSingleton() 获取代理后的对象
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -624,6 +638,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 执行后置处理器，aop 就是在这里完成的处理
 			// 初始化 spring
 			// 里面会进行第七次和第八次后置处理器的调用
+			// 初始化 bean : 调用设置的初始化方法，接口定义的初始化方法，
+			// 以及相应的 pre-/post-init 生命周期回调函数
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -679,7 +695,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Register bean as disposable.
 		try {
 			// 如果配置了 destroy-method ，这里需要注册以便于在销毁时候调用
-			// 根据 scopse 注册 bean
+			// 根据 scope 注册 bean
+			// 第九次后置处理器的调用
+			// 如果当前 bean 实现类有关销毁时的接口或者函数，将它进行相应的登记
+			// 供容器关闭时执行相应的回调函数
 			registerDisposableBeanIfNecessary(beanName, bean, mbd);
 		}
 		catch (BeanDefinitionValidationException ex) {
@@ -1378,6 +1397,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// to support styles of field injection.
 		boolean continueWithPropertyPopulation = true;
 
+		// 第五次执行后置处理器
 		// InstantiationAwareBeanPostProcessors 处理器的 postProcessAfterInstantiation 函数的应用，
 		// 此函数可以控制程序是否继续进行属性填充
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {

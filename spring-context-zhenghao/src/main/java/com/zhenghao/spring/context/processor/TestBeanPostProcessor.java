@@ -20,8 +20,12 @@ import java.lang.reflect.Proxy;
  * @date :2019/11/05 22:33
  * TestBeanPostProcessor.java
  */
-// @Component
+@Component
 public class TestBeanPostProcessor implements BeanPostProcessor {
+
+	public TestBeanPostProcessor() {
+		System.out.println("TestBeanPostProcessor init");
+	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
