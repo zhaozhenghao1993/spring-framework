@@ -28,6 +28,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * AnnotationAwareAspectJAutoProxyCreator 实现了 BeanPostProcessor 接口，
+ * 而实现 BeanPostProcessor 后，当Spring 加载这个 bean 时会在实例化前调用其 postProcessAfterInitialization 方法
  * {@link AspectJAwareAdvisorAutoProxyCreator} subclass that processes all AspectJ
  * annotation aspects in the current application context, as well as Spring Advisors.
  *
