@@ -362,6 +362,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
 			// 这里创建完 AOP 代理对象
+			// 在获取了所有对应 bean 的增强器后，便可以进行代理的创建了
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
 			this.proxyTypes.put(cacheKey, proxy.getClass());

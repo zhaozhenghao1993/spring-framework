@@ -97,6 +97,8 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 		// 由于我们分析的是使用注解进行的 AOP，所以对于 findCandidateAdvisors 的实现其实是由 AnnotationAwareAspectJAutoProxyCreator
 		// 的 findCandidateAdvisors 方法
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
+		// 这里已经完成了所有增强器的解析，但是对于所有增强器来讲，并不一定都适用于当前 bean，还要挑取出合适的增强器，也就是
+		// 满足我们配置的通配符的增强器，具体实现 findAdvisorsThatCanApply()
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
 		extendAdvisors(eligibleAdvisors);
 		if (!eligibleAdvisors.isEmpty()) {
@@ -128,6 +130,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 
 		ProxyCreationContext.setCurrentProxiedBeanName(beanName);
 		try {
+			// 过滤已经得到的 advisors
 			return AopUtils.findAdvisorsThatCanApply(candidateAdvisors, beanClass);
 		}
 		finally {
