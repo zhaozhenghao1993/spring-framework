@@ -112,6 +112,11 @@ public class ProxyFactory extends ProxyCreatorSupport {
 		 * CglibAopProxy、JdkDynamicAopProxy、ObjenesisCglibAopProxy
 		 * 因此 spring 有两个实现 AOP 的技术 Cglib 和 jdk 动态代理
 		 */
+		/**
+		 * JdkDynamicAopProxy 的 getProxy 方法就和平时用的 Proxy.newProxyInstance() 一样
+		 * JdkDynamicAopProxy 是实现了 InvocationHandler ，那么 JdkDynamicAopProxy 里面的
+		 * invoke 方法就是 代理对象的执行方法
+		 */
 		return createAopProxy().getProxy(classLoader);
 	}
 
