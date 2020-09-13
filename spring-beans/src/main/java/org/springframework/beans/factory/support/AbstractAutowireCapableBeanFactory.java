@@ -429,6 +429,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		/**
 		 * AOP 由 后置处理器 AnnotationAwareAspectJAutoProxyCreator 处理
+		 *【很重要】
+		 * 我们AOP @EnableAspectJAutoProxy 为我们容器中导入了 AnnotationAwareAspectJAutoProxyCreator
+		 * 我们事务注解 @EnableTransactionManagement 为我们的容器导入了 InfrastructureAdvisorAutoProxyCreator
+		 * 都是实现了我们的 BeanPostProcessor 接口的 postProcessAfterInitialization 来生成我们的代理对象
  		 */
 		Object result = existingBean;
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
@@ -492,6 +496,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 并在 postProcessBeforeInstantiation 中改变了 bean，则直接返回就可以了，否则需要在下面进行常规 bean 的创建
 			// 第一次应用 spring 的后置处理器
 			// 在 bean 初始化前应用后置处理器，如果后置处理返回的 bean 不为空，则直接返回
+			// 通过bean 的后置处理器来进行后置处理生成代理对象，一般情况就在此处不会生成代理对象
+			// 为什么不能生成代理对象，不管是我们的jdk动态代理还是cglib代理都不会在此处进行代理，因为我们的
+			// 真实对象还没有生成，所以这里不会生成代理对象，那么在这一步是我们aop和事务的关键，因为在这里解析
+			// 我们的 aop 切面信息进行缓存
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
@@ -504,7 +512,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
-			// 常规 bean 的创建
+			// 常规 bean 的创建，这里也是产生代理对象
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Finished creating instance of bean '" + beanName + "'");

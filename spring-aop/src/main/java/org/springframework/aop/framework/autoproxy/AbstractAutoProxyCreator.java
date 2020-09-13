@@ -290,6 +290,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	}
 
 	/**
+	 * 在该后置方法中，我们的事务和 AOP 的代理对象都是在这里产生的
 	 * Create a proxy with the configured interceptors if the bean is
 	 * identified as one to proxy by the subclass.
 	 * @see #getAdvicesAndAdvisorsForBean
@@ -360,11 +361,13 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
 		// 如果获取到了增强则需要针对增强创建代理
 		if (specificInterceptors != DO_NOT_PROXY) {
+			// 表示当前的对象已经代理模式处理过了
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
 			// 这里创建完 AOP 代理对象
 			// 在获取了所有对应 bean 的增强器后，便可以进行代理的创建了
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
+			// 加入到缓存
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
 		}
@@ -476,6 +479,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 		// 决定对于给定的 bean 是否应该使用 targetClass 而不是它的接口代理，
 		// 检查 proxyTargetClass 设置以及 preserveTargetClass 属性
+		// 为proxyFactory 设置创建 jdk 代理还是 cglib 代理
 		if (!proxyFactory.isProxyTargetClass()) {
 			if (shouldProxyTargetClass(beanClass, beanName)) {
 				proxyFactory.setProxyTargetClass(true);

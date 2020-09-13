@@ -44,7 +44,7 @@ public class Test {
 		 * 把 bean 实例化
 		 */
 		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
-		TestService bean = (TestService) applicationContext.getBean("testServiceImpl");
+		TestService bean = (TestService) applicationContext.getBean("testService");
 		bean.query();
 		/*DemoService bean = applicationContext.getBean(DemoService.class);
 		bean.test();*/

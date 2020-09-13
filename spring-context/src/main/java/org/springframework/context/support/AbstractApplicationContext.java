@@ -556,6 +556,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Initialize other special beans in specific context subclasses.
 				// 留给子类来初始化其他的 bean
+				// springboot 也是从这个方法进行启动 tomcat 的
 				onRefresh();
 
 				// Check for listener beans and register them.
@@ -569,6 +570,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Last step: publish corresponding event.
 				// 完成刷新过程，通知生命周期处理器 lifecycleProcessor 刷新过程，同时发出 ContextRefreshEvent 通知别人
+				// 最后容器刷新 发布刷新事件（Spring cloud 也是从这里启动的）
 				finishRefresh();
 			}
 

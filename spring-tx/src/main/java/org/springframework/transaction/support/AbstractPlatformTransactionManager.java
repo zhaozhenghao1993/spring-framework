@@ -339,31 +339,43 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 */
 	@Override
 	public final TransactionStatus getTransaction(@Nullable TransactionDefinition definition) throws TransactionException {
+		// 尝试获取一个事务对象
 		Object transaction = doGetTransaction();
 
 		// Cache debug flag to avoid repeated checks.
 		boolean debugEnabled = logger.isDebugEnabled();
 
+		// 判断从上一个方法传递进来的事务属性是不是空
 		if (definition == null) {
+			// 为空的话，执行非事务方法
 			// Use defaults if no transaction definition given.
 			definition = new DefaultTransactionDefinition();
 		}
 
+		// 判断是不是已经存在了事务对象
 		if (isExistingTransaction(transaction)) {
 			// Existing transaction found -> check propagation behavior to find out how to behave.
 			return handleExistingTransaction(definition, transaction, debugEnabled);
 		}
 
+		// 检查事务设置的超时时间
 		// Check definition settings for new transaction.
 		if (definition.getTimeout() < TransactionDefinition.TIMEOUT_DEFAULT) {
 			throw new InvalidTimeoutException("Invalid transaction timeout", definition.getTimeout());
 		}
 
+		// 若当前的事务属性是 PROPAGATION_MANDATORY 表示必须运行在事务中，若当前没有事务就抛出异常
+		// 由于 isExistingTransaction(transaction) 跳到了这里，说明当前是不存在事务的，那么就会抛出异常
 		// No existing transaction found -> check propagation behavior to find out how to proceed.
 		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_MANDATORY) {
 			throw new IllegalTransactionStateException(
 					"No existing transaction found for transaction marked with propagation 'mandatory'");
 		}
+		// PROPAGATION_REQUIRED 当前存在事务就加入到当前的事务，没有就新开一个
+		// PROPAGATION_REQUIRES_NEW 新开一个事务，若当前存在事务，就挂起当前事务
+		// PROPAGATION_NESTED 表示如果当前正有一个事务在运行中，则该方法应该运行在一个嵌套的事务中，
+		// 		被嵌套的事务可以独立与封装事务进行提交或者回滚（保存点）。
+		// 		如果封装事务不存在，行为就像 PROPAGATION_REQUIRES_NEW
 		else if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRED ||
 				definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW ||
 				definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NESTED) {

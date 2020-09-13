@@ -65,29 +65,48 @@ public class BeanFactoryAdvisorRetrievalHelper {
 	 * @see #isEligibleBean
 	 */
 	public List<Advisor> findAdvisorBeans() {
+		/**
+		 * 探测器字段缓存中的 cachedAdvisorBeanNames 是用来保存我们的 Advisor 全类名
+		 * 会在第一个单实例 bean 的中回去吧这个 advisor 名称解析出来
+		 */
 		// Determine list of advisor bean names, if not cached already.
 		String[] advisorNames = this.cachedAdvisorBeanNames;
 		if (advisorNames == null) {
+			/**
+			 * 去我们的容器中获取到实现了 Advisor 接口的实现类
+			 * 而我们的事务注解 @EnableTransactionManagement 导入了一个叫 ProxyTransactionManagementConfiguration 配置类
+			 * 而在这个配置类中配置了
+			 * @Bean(name = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME)
+			 * @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+			 * Public BeanFactoryTransactionAttributeSourceAdvisor transactionAdvisor();
+			 * 然后吧他的名字获取出来保存到 本类的属性变量 cachedAdvisorBeanNames 中
+			 */
 			// Do not initialize FactoryBeans here: We need to leave all regular beans
 			// uninitialized to let the auto-proxy creator apply to them!
 			advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 					this.beanFactory, Advisor.class, true, false);
 			this.cachedAdvisorBeanNames = advisorNames;
 		}
+		// 若在容器中没有找到，直接返回一个空集合
 		if (advisorNames.length == 0) {
 			return new ArrayList<>();
 		}
 
 		List<Advisor> advisors = new ArrayList<>();
+		// ioc容器中找到了我们配置的 BeanFactoryTransactionAttributeSourceAdvisor
 		for (String name : advisorNames) {
+			// 判断他是不是一个合适的 是我们想要的
 			if (isEligibleBean(name)) {
+				// BeanFactoryTransactionAttributeSourceAdvisor 是不是正在创建的 bean
 				if (this.beanFactory.isCurrentlyInCreation(name)) {
 					if (logger.isDebugEnabled()) {
 						logger.debug("Skipping currently created advisor '" + name + "'");
 					}
 				}
+				// 不是的话
 				else {
 					try {
+						// 显示的调用 getBean 方法创建我们的 BeanFactoryTransactionAttributeSourceAdvisor 返回去
 						advisors.add(this.beanFactory.getBean(name, Advisor.class));
 					}
 					catch (BeanCreationException ex) {

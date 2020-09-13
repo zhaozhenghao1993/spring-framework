@@ -308,7 +308,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		 * 这里不讨论这个过程，以后有机会更新一下
 		 * 读者可以理解 Spring 直接通过new关键字来实例化一个对象
 		 * 但是这个时候对象 a 仅仅是一个对象，还不是一个完整的 bean
-		 * 结者让这个对象去完成 Spring 的 bean 的生命周期
+		 * 接着让这个对象去完成 Spring 的 bean 的生命周期
 		 * 过程中 Spring 会判断容器是否允许循环引用，判断循环引用的代码笔者下面会分析
 		 * 前面说过 Spring 默认是支持循环引用的，壁纸后面解析这个片段的源码也是 Spring 默认支持循环引用的证据
 		 * 如果允许循环引用，Spring 会把这个对象（还不是 bean）临时保存起来，放到这个 map 当中
